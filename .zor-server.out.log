@@ -1,0 +1,8 @@
+
+> zor-professional@0.1.0 start
+> next start -p 3000
+
+▲ Next.js 16.2.9
+- Local:         http://localhost:3000
+- Network:       http://192.168.100.7:3000
+✓ Ready in 173ms

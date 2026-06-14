@@ -1,0 +1,98 @@
+import { DeckPage } from "@/components/deck/DeckPage";
+import {
+  DeckCardGrid,
+  ImagePanel,
+  ProductPackVisual,
+} from "@/components/deck/DeckVisuals";
+import { chapterLabels } from "@/content/deck";
+import type { Product } from "@/content/products";
+import {
+  getLanguageHrefs,
+  getWhatsAppHref,
+  routes,
+  type Locale,
+} from "@/content/site";
+
+type ProductDetailPageProps = {
+  locale: Locale;
+  product: Product;
+};
+
+export function ProductDetailPage({ locale, product }: ProductDetailPageProps) {
+  const isHr = locale === "hr";
+
+  return (
+    <DeckPage
+      activeKey="products"
+      chapterLabel={chapterLabels[locale].products}
+      languageHrefs={getLanguageHrefs("products", product.slugs)}
+      locale={locale}
+      slides={[
+        {
+          id: product.slugs[locale],
+          eyebrow: product.eyebrow[locale],
+          title: product.name[locale],
+          body: product.detail[locale],
+          background: "theme",
+          layout: "split",
+          primaryCta: {
+            label: isHr ? "Pošalji upit za proizvod" : "Send product inquiry",
+            href: getWhatsAppHref(locale),
+          },
+          secondaryCta: {
+            label: isHr ? "Natrag na proizvode" : "Back to products",
+            href: routes[locale].products,
+            variant: "secondary",
+          },
+          visual: (
+            <ProductPackVisual
+              count={product.packCount[locale]}
+              label={product.name[locale]}
+              price={product.mockPrice[locale]}
+            />
+          ),
+        },
+        {
+          id: "specifikacije",
+          eyebrow: isHr ? "Specifikacije" : "Specifications",
+          title: isHr ? "Najvažnije informacije stanu na jedan ekran." : "The key information fits on one screen.",
+          body: isHr
+            ? "Detaljnije cijene i finalne fotografije dodaju se kada se potvrdi asortiman."
+            : "Detailed prices and final photography will be added once the assortment is confirmed.",
+          background: "light",
+          layout: "splitReverse",
+          visual: (
+            <DeckCardGrid
+              columns="three"
+              iconSet="none"
+              items={[
+                ...product.highlights[locale].map((highlight) => ({
+                  title: highlight,
+                })),
+                ...product.specs.map((spec) => ({
+                  meta: spec.label[locale],
+                  title: spec.value[locale],
+                })),
+              ]}
+            />
+          ),
+        },
+        {
+          id: "vizual",
+          eyebrow: isHr ? "Vizual proizvoda" : "Product visual",
+          title: isHr ? "Prikaz ostaje informativan, ne webshop katalog." : "The display stays informative, not a webshop catalogue.",
+          body: product.summary[locale],
+          background: "soft",
+          layout: "split",
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Vizual asortimana toaletnog papira" : "Toilet paper assortment visual"}
+              src={product.image}
+            />
+          ),
+        },
+      ]}
+      theme="products"
+    />
+  );
+}
