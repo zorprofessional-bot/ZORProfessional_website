@@ -19,6 +19,7 @@ export function CalculatorPage({ locale }: { locale: Locale }) {
       activeKey="calculator"
       chapterLabel={chapterLabels[locale].calculator}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy[0],

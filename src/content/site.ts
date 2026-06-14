@@ -13,6 +13,16 @@ export type MobileRouteKey = RouteKey;
 
 export const locales: Locale[] = ["hr", "en"];
 
+export const menuRouteOrder: RouteKey[] = [
+  "home",
+  "products",
+  "production",
+  "calculator",
+  "blog",
+  "careers",
+  "contact",
+];
+
 export const routes: Record<Locale, Record<RouteKey, string>> = {
   hr: {
     home: "/hr",
@@ -58,12 +68,66 @@ export const desktopNav: Record<
   ],
 };
 
+const menuChapterSlides: Record<
+  Locale,
+  Record<RouteKey, { first: string; last: string }>
+> = {
+  hr: {
+    home: { first: "hero", last: "brzi-put-dalje" },
+    products: { first: "pregled", last: "poslovne-kolicine" },
+    production: { first: "hrvatska-proizvodnja", last: "skladiste" },
+    calculator: { first: "intro", last: "whatsapp-upit" },
+    blog: { first: "featured", last: "savjeti" },
+    careers: { first: "uvod", last: "prijava" },
+    contact: { first: "whatsapp", last: "lokacija" },
+  },
+  en: {
+    home: { first: "hero", last: "quick-path" },
+    products: { first: "overview", last: "business-quantities" },
+    production: { first: "croatian-production", last: "warehouse" },
+    calculator: { first: "intro", last: "whatsapp-inquiry" },
+    blog: { first: "featured", last: "advice" },
+    careers: { first: "intro", last: "application" },
+    contact: { first: "whatsapp", last: "location" },
+  },
+};
+
+export function getMenuChapterHref(
+  locale: Locale,
+  routeKey: RouteKey,
+  edge: "first" | "last" = "first",
+) {
+  const slideId = menuChapterSlides[locale][routeKey][edge];
+  return `${routes[locale][routeKey]}?slide=${slideId}`;
+}
+
+export function getAdjacentMenuChapterHref(
+  locale: Locale,
+  routeKey: RouteKey,
+  direction: "next" | "previous",
+) {
+  const currentIndex = menuRouteOrder.indexOf(routeKey);
+  const adjacentIndex =
+    direction === "next" ? currentIndex + 1 : currentIndex - 1;
+  const adjacentKey = menuRouteOrder[adjacentIndex];
+
+  if (!adjacentKey) {
+    return undefined;
+  }
+
+  return getMenuChapterHref(
+    locale,
+    adjacentKey,
+    direction === "next" ? "first" : "last",
+  );
+}
+
 export const mobileNav: Record<
   Locale,
   Array<{ key: MobileRouteKey; label: string }>
 > = {
   hr: [
-    { key: "home", label: "Home" },
+    { key: "home", label: "Početna" },
     { key: "products", label: "Proizvodi" },
     { key: "production", label: "Pogon" },
     { key: "calculator", label: "Kalkulator" },

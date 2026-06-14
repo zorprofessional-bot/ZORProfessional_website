@@ -50,24 +50,29 @@ export function Navbar({ locale, activeKey, languageHrefs, tone = "light" }: Nav
           </Link>
 
           <div className="hidden items-center gap-1 lg:flex">
-            {desktopNav[locale].map((item) => (
-              <Link
-                className={cn(
-                  "rounded-full px-3 py-2 text-sm font-semibold transition",
-                  activeKey === item.key
-                    ? dark
-                      ? "bg-white text-zor-blue-deep"
-                      : "bg-zor-blue text-white"
-                    : dark
-                      ? "text-white/70 hover:bg-white/10 hover:text-white"
-                      : "text-zor-muted hover:bg-zor-blue-soft hover:text-zor-blue",
-                )}
-                href={routes[locale][item.key]}
-                key={item.key}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {desktopNav[locale].map((item) => {
+              const active = activeKey === item.key;
+
+              return (
+                <Link
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "rounded-full px-3 py-2 text-sm font-semibold transition",
+                    active
+                      ? dark
+                        ? "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-white/70"
+                        : "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-zor-line"
+                      : dark
+                        ? "text-white/70 hover:bg-white/10 hover:text-white"
+                        : "text-zor-muted hover:bg-zor-blue-soft hover:text-zor-blue",
+                  )}
+                  href={routes[locale][item.key]}
+                  key={item.key}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="flex items-center gap-2">

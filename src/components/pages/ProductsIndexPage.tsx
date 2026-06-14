@@ -19,6 +19,7 @@ export function ProductsIndexPage({ locale }: { locale: Locale }) {
       activeKey="products"
       chapterLabel={chapterLabels[locale].products}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy.overview,

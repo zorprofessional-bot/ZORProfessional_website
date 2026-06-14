@@ -25,6 +25,7 @@ export function HomePage({ locale }: HomePageProps) {
       activeKey="home"
       chapterLabel={chapterLabels[locale].home}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy.hero,

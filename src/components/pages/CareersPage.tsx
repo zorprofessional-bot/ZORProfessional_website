@@ -16,6 +16,7 @@ export function CareersPage({ locale }: { locale: Locale }) {
       activeKey="careers"
       chapterLabel={chapterLabels[locale].careers}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy[0],

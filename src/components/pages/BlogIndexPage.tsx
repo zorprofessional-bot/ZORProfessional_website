@@ -17,6 +17,7 @@ export function BlogIndexPage({ locale }: { locale: Locale }) {
       activeKey="blog"
       chapterLabel={chapterLabels[locale].blog}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy[0],

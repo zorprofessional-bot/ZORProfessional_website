@@ -17,6 +17,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
       activeKey="contact"
       chapterLabel={chapterLabels[locale].contact}
       locale={locale}
+      menuFlow
       slides={[
         {
           ...copy[0],

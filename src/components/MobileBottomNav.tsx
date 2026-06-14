@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import {
   BriefcaseBusiness,
   Calculator,
@@ -34,6 +37,15 @@ const icons = {
 
 export function MobileBottomNav({ locale, activeKey, tone = "light" }: MobileBottomNavProps) {
   const dark = tone === "dark";
+  const activeItemRef = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    activeItemRef.current?.scrollIntoView({
+      behavior: "auto",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [activeKey]);
 
   return (
     <nav
@@ -60,15 +72,21 @@ export function MobileBottomNav({ locale, activeKey, tone = "light" }: MobileBot
             "flex min-h-14 min-w-16 flex-col items-center justify-center gap-1 rounded-2xl px-2 transition",
             active
               ? dark
-                ? "bg-white text-zor-blue-deep"
-                : "bg-zor-blue text-white"
+                ? "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-white/70"
+                : "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-zor-line"
               : dark
                 ? "text-white/68 hover:bg-white/10 hover:text-white"
                 : "text-zor-muted hover:bg-zor-blue-soft hover:text-zor-blue",
           );
 
           return (
-            <Link className={className} href={href} key={item.key}>
+            <Link
+              aria-current={active ? "page" : undefined}
+              className={className}
+              href={href}
+              key={item.key}
+              ref={active ? activeItemRef : undefined}
+            >
               {content}
             </Link>
           );

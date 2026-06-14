@@ -1,9 +1,24 @@
 "use client";
 
-import { Children, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Children,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { useRouter } from "next/navigation";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Navbar } from "@/components/Navbar";
-import { getLanguageHrefs, type Locale, type RouteKey } from "@/content/site";
+import {
+  getAdjacentMenuChapterHref,
+  getLanguageHrefs,
+  type Locale,
+  type RouteKey,
+} from "@/content/site";
 import { cn } from "@/lib/utils";
 import {
   ChapterThemeProvider,
@@ -20,11 +35,16 @@ type DeckShellProps = {
   children: ReactNode;
   languageHrefs?: Record<Locale, string>;
   locale: Locale;
+  menuFlow?: boolean;
   slides: DeckSlideMeta[];
   theme: ChapterThemeId;
 };
 
 const slideParamName = "slide";
+
+const subscribeToHydration = () => () => {};
+const getHydratedSnapshot = () => true;
+const getServerHydratedSnapshot = () => false;
 
 function isTypingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) {
@@ -42,14 +62,29 @@ export function DeckShell({
   children,
   languageHrefs = getLanguageHrefs(activeKey),
   locale,
+  menuFlow = false,
   slides,
   theme,
 }: DeckShellProps) {
+  const router = useRouter();
   const themeConfig = getChapterTheme(theme);
   const [activeIndex, setActiveIndex] = useState(0);
+  const controlsReady = useSyncExternalStore(
+    subscribeToHydration,
+    getHydratedSnapshot,
+    getServerHydratedSnapshot,
+  );
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wheelLockUntil = useRef(0);
   const slideNodes = useMemo(() => Children.toArray(children), [children]);
+  const nextChapterHref = menuFlow
+    ? getAdjacentMenuChapterHref(locale, activeKey, "next")
+    : undefined;
+  const previousChapterHref = menuFlow
+    ? getAdjacentMenuChapterHref(locale, activeKey, "previous")
+    : undefined;
+  const canGoNext = activeIndex < slides.length - 1 || Boolean(nextChapterHref);
+  const canGoPrevious = activeIndex > 0 || Boolean(previousChapterHref);
 
   const indexFromLocation = useCallback(() => {
     if (typeof window === "undefined") {
@@ -96,24 +131,26 @@ export function DeckShell({
   );
 
   const goNext = useCallback(() => {
-    setActiveIndex((current) => {
-      const next = Math.min(slides.length - 1, current + 1);
-      if (next !== current) {
-        writeSlideToUrl(next);
-      }
-      return next;
-    });
-  }, [slides.length, writeSlideToUrl]);
+    if (activeIndex < slides.length - 1) {
+      goTo(activeIndex + 1);
+      return;
+    }
+
+    if (nextChapterHref) {
+      router.push(nextChapterHref);
+    }
+  }, [activeIndex, goTo, nextChapterHref, router, slides.length]);
 
   const goPrevious = useCallback(() => {
-    setActiveIndex((current) => {
-      const next = Math.max(0, current - 1);
-      if (next !== current) {
-        writeSlideToUrl(next);
-      }
-      return next;
-    });
-  }, [writeSlideToUrl]);
+    if (activeIndex > 0) {
+      goTo(activeIndex - 1);
+      return;
+    }
+
+    if (previousChapterHref) {
+      router.push(previousChapterHref);
+    }
+  }, [activeIndex, goTo, previousChapterHref, router]);
 
   useEffect(() => {
     const syncFromUrl = () => {
@@ -236,12 +273,8 @@ export function DeckShell({
               <div
                 aria-hidden={!active}
                 className={cn(
-                  "absolute inset-0 h-full w-full transition-[opacity,transform,visibility] duration-300 ease-out",
-                  active
-                    ? "visible translate-x-0 opacity-100"
-                    : index < activeIndex
-                      ? "invisible -translate-x-4 opacity-0"
-                      : "invisible translate-x-4 opacity-0",
+                  "absolute inset-0 h-full w-full transition-opacity duration-200 ease-out",
+                  active ? "visible opacity-100" : "invisible opacity-0",
                 )}
                 key={slides[index]?.id ?? index}
               >
@@ -259,8 +292,8 @@ export function DeckShell({
         tone={themeConfig.navTone}
       />
       <DeckControls
-        canGoNext={activeIndex < slides.length - 1}
-        canGoPrevious={activeIndex > 0}
+        canGoNext={controlsReady ? canGoNext : true}
+        canGoPrevious={controlsReady ? canGoPrevious : true}
         labels={{ next: labels.next, previous: labels.previous }}
         onNext={goNext}
         onPrevious={goPrevious}

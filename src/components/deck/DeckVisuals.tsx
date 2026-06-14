@@ -40,6 +40,13 @@ type CardItem = {
 
 const audienceIcons = [Home, Building2, Warehouse, Users];
 const processIcons = [Factory, Warehouse, ClipboardList, Scissors, Package, Truck];
+const processImagePositions = [
+  "42% center",
+  "52% center",
+  "60% center",
+  "70% center",
+  "78% center",
+];
 const routeIcons = {
   products: Package,
   calculator: Calculator,
@@ -292,6 +299,50 @@ export function ProcessRail({
         );
       })}
     </div>
+  );
+}
+
+export function ProcessStepVisual({
+  step,
+  stepIndex,
+  tone = "light",
+  totalSteps,
+}: {
+  step: CardItem;
+  stepIndex: number;
+  tone?: VisualTone;
+  totalSteps: number;
+}) {
+  const Icon = processIcons[stepIndex] ?? CheckCircle2;
+  const stepNumber = String(stepIndex + 1).padStart(2, "0");
+
+  return (
+    <figure className={cn("w-full max-w-xl overflow-hidden rounded-[1.25rem]", panelClasses(tone))}>
+      <div className="relative h-[29svh] min-h-52 sm:h-[42svh] lg:h-[58svh]">
+        <Image
+          alt={step.title}
+          className="object-cover"
+          fill
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          src="/visuals/production-line.png"
+          style={{ objectPosition: processImagePositions[stepIndex] ?? "center" }}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(245,250,255,0.06)_0%,rgba(6,36,75,0.1)_46%,rgba(6,36,75,0.72)_100%)]" />
+        <figcaption className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+          <div className="flex items-center gap-3 rounded-[1rem] border border-white/22 bg-white/92 p-3 text-zor-blue-deep shadow-zor-soft backdrop-blur">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-zor-blue text-white">
+              <Icon aria-hidden size={21} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-zor-blue">
+                {stepNumber}/{String(totalSteps).padStart(2, "0")}
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-snug sm:text-base">{step.title}</p>
+            </div>
+          </div>
+        </figcaption>
+      </div>
+    </figure>
   );
 }
 
