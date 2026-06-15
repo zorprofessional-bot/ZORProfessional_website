@@ -1,12 +1,16 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/LogoMark";
 
 export default function NotFound() {
   return (
     <main className="grid min-h-screen place-items-center bg-zor-paper px-6 text-center">
       <div className="max-w-lg">
-        <p className="text-xs font-bold uppercase tracking-[0.24em] text-zor-blue">
-          ZOR Professional
-        </p>
+        <LogoMark
+          className="mx-auto h-16 w-16 rounded-2xl shadow-sm ring-1 ring-inset ring-zor-line"
+          imageClassName="p-1"
+          priority
+          sizes="4rem"
+        />
         <h1 className="mt-5 text-4xl font-semibold text-zor-blue-deep">Page not found</h1>
         <p className="mt-4 text-zor-muted">
           The page does not exist yet or the slug is not part of the mock content.

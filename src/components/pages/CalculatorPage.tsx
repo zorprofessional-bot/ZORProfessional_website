@@ -9,63 +9,77 @@ import {
 } from "@/components/deck/InteractiveDeckCards";
 import { calculatorDeck, chapterLabels } from "@/content/deck";
 import { getWhatsAppHref, type Locale } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
-export function CalculatorPage({ locale }: { locale: Locale }) {
+type CalculatorPageProps = {
+  deckData?: DeckPageData;
+  locale: Locale;
+};
+
+export function CalculatorPage({ deckData, locale }: CalculatorPageProps) {
   const copy = calculatorDeck[locale];
   const isHr = locale === "hr";
+  const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
 
   return (
     <DeckPage
       activeKey="calculator"
-      chapterLabel={chapterLabels[locale].calculator}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].calculator}
       locale={locale}
       menuFlow
       slides={[
         {
-          ...copy[0],
-          background: "theme",
-          layout: "split",
-          primaryCta: {
-            label: isHr ? "Pošalji okvirnu potrošnju" : "Send estimated demand",
+          ...slides[0],
+          body: slides[0]?.body ?? copy[0].body,
+          background: slides[0]?.background ?? "theme",
+          layout: slides[0]?.layout ?? "split",
+          primaryCta: slides[0]?.primaryCta ?? {
+            label: isHr ? "PoÅ¡alji okvirnu potroÅ¡nju" : "Send estimated demand",
             href: getWhatsAppHref(locale),
           },
           visual: (
             <ImagePanel
               alt={
                 isHr
-                  ? "Vizual kalkulatora potrošnje wc papira"
+                  ? "Vizual kalkulatora potroÅ¡nje wc papira"
                   : "Toilet paper consumption calculator visual"
               }
               priority
-              src="/visuals/calculator-preview.png"
+              src={slides[0]?.imageUrl ?? "/visuals/calculator-preview.png"}
             />
           ),
         },
         {
-          ...copy[1],
-          background: "light",
-          layout: "splitReverse",
+          ...slides[1],
+          body: slides[1]?.body ?? copy[1].body,
+          background: slides[1]?.background ?? "light",
+          layout: slides[1]?.layout ?? "splitReverse",
           visual: <CalculatorInputCard locale={locale} />,
         },
         {
-          ...copy[2],
-          background: "soft",
-          layout: "split",
+          ...slides[2],
+          body: slides[2]?.body ?? copy[2].body,
+          background: slides[2]?.background ?? "soft",
+          layout: slides[2]?.layout ?? "split",
           visual: <CalculatorResultCard locale={locale} />,
         },
         {
-          ...copy[3],
-          background: "theme",
-          layout: "splitReverse",
-          primaryCta: {
+          ...slides[3],
+          body: slides[3]?.body ?? copy[3].body,
+          background: slides[3]?.background ?? "theme",
+          layout: slides[3]?.layout ?? "splitReverse",
+          primaryCta: slides[3]?.primaryCta ?? {
             label: isHr ? "WhatsApp upit" : "WhatsApp inquiry",
             href: getWhatsAppHref(locale),
           },
-          tone: "light",
-          visual: <WhatsAppPanel locale={locale} tone="light" />,
+          tone: "dark",
+          visual: <WhatsAppPanel locale={locale} tone="dark" />,
         },
       ]}
-      theme="calculator"
+      theme={deckData?.chapter.theme ?? "calculator"}
     />
   );
 }

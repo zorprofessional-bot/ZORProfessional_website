@@ -5,28 +5,42 @@ import {
 } from "@/components/deck/DeckVisuals";
 import { chapterLabels, productionDeck } from "@/content/deck";
 import { getWhatsAppHref, type Locale } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
-export function ProductionPage({ locale }: { locale: Locale }) {
-  const slides = productionDeck[locale];
+type ProductionPageProps = {
+  deckData?: DeckPageData;
+  locale: Locale;
+};
+
+export function ProductionPage({ deckData, locale }: ProductionPageProps) {
+  const fallbackSlides = productionDeck[locale];
+  const slides = fallbackSlides.map((slide) =>
+    resolveDeckSlideContent(deckData, slide),
+  );
   const isHr = locale === "hr";
 
   return (
     <DeckPage
       activeKey="production"
-      chapterLabel={chapterLabels[locale].production}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].production}
       locale={locale}
       menuFlow
       slides={slides.map((slide, index) => ({
         ...slide,
-        background: index === 0 ? "theme" : "steel",
-        layout: "split",
+        body: slide.body ?? fallbackSlides[index]?.body ?? "",
+        background: slide.background ?? (index === 0 ? "theme" : "steel"),
+        layout: slide.layout ?? "split",
         primaryCta:
-          index === 0 || index === slides.length - 1
+          slide.primaryCta ??
+          (index === 0 || index === slides.length - 1
             ? {
-                label: isHr ? "Pošalji upit" : "Send inquiry",
+                label: isHr ? "PoÅ¡alji upit" : "Send inquiry",
                 href: getWhatsAppHref(locale),
               }
-            : undefined,
+            : undefined),
         visual:
           index === 0 ? (
             <ImagePanel
@@ -36,7 +50,7 @@ export function ProductionPage({ locale }: { locale: Locale }) {
                   : "Toilet paper production line"
               }
               priority
-              src="/visuals/production-line.png"
+              src={slide.imageUrl ?? "/visuals/production-line.png"}
             />
           ) : (
             <ProcessStepVisual
@@ -46,7 +60,7 @@ export function ProductionPage({ locale }: { locale: Locale }) {
             />
           ),
       }))}
-      theme="production"
+      theme={deckData?.chapter.theme ?? "production"}
     />
   );
 }

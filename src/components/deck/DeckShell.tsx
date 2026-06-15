@@ -189,6 +189,10 @@ export function DeckShell({
   const handleWheel = (event: React.WheelEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
 
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      return;
+    }
+
     if (target.closest("[data-deck-scroll]")) {
       return;
     }
@@ -196,13 +200,16 @@ export function DeckShell({
     event.preventDefault();
 
     const now = window.performance.now();
-    if (now < wheelLockUntil.current || Math.abs(event.deltaY) < 34) {
+    const primaryDelta =
+      Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+
+    if (now < wheelLockUntil.current || Math.abs(primaryDelta) < 34) {
       return;
     }
 
     wheelLockUntil.current = now + 720;
 
-    if (event.deltaY > 0) {
+    if (primaryDelta > 0) {
       goNext();
     } else {
       goPrevious();
@@ -254,13 +261,17 @@ export function DeckShell({
     <ChapterThemeProvider theme={theme}>
       <Navbar
         activeKey={activeKey}
+        activeSlideIndex={activeIndex}
         languageHrefs={languageHrefs}
         locale={locale}
-        tone={themeConfig.navTone}
+        onSlideSelect={(index) => goTo(index)}
+        slideLabels={{ goTo: labels.goTo, progress: labels.progress }}
+        slides={slides}
+        tone="dark"
       />
       <main
         aria-label={chapterLabel}
-        className="relative h-[100svh] overflow-hidden pb-[6.1rem] pt-20 md:pb-0"
+        className="relative h-[100svh] overflow-hidden pb-[5.35rem] pt-[4.5rem] md:pb-0 md:pt-20 lg:pt-[7.75rem]"
         onTouchEnd={handleTouchEnd}
         onTouchStart={handleTouchStart}
         onWheel={handleWheel}
@@ -273,7 +284,7 @@ export function DeckShell({
               <div
                 aria-hidden={!active}
                 className={cn(
-                  "absolute inset-0 h-full w-full transition-opacity duration-200 ease-out",
+                  "deck-scroll absolute inset-0 h-full w-full overflow-y-auto overscroll-contain transition-opacity duration-200 ease-out md:overflow-hidden",
                   active ? "visible opacity-100" : "invisible opacity-0",
                 )}
                 key={slides[index]?.id ?? index}

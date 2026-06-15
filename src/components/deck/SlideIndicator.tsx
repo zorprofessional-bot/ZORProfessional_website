@@ -24,10 +24,10 @@ export function SlideIndicator({
   const dark = tone === "dark";
 
   return (
-    <div className="pointer-events-none fixed bottom-[5.8rem] left-4 z-40 max-w-[calc(100vw-8.5rem)] md:bottom-6 md:left-6 md:max-w-[34rem]">
+    <div className="pointer-events-none fixed bottom-[4.85rem] left-4 right-4 z-40 flex justify-center lg:hidden">
       <div
         className={cn(
-          "pointer-events-auto flex max-w-full items-center gap-3 rounded-full border px-3 py-2 backdrop-blur-xl",
+          "pointer-events-auto flex max-w-full items-center justify-center gap-3 rounded-full border px-3 py-2 backdrop-blur-xl",
           dark
             ? "border-white/18 bg-white/10 text-white"
             : "border-zor-line bg-white/82 text-zor-blue-deep shadow-sm",
@@ -36,7 +36,7 @@ export function SlideIndicator({
         <span className={cn("shrink-0 text-xs font-bold", dark ? "text-white/74" : "text-zor-muted")}>
           {activeIndex + 1}/{slides.length}
         </span>
-        <div className="flex min-w-0 items-center gap-1.5" role="tablist" aria-label={labels.progress}>
+        <div className="flex min-w-0 items-center justify-center gap-1.5" role="tablist" aria-label={labels.progress}>
           {slides.map((slide, index) => {
             const active = index === activeIndex;
 

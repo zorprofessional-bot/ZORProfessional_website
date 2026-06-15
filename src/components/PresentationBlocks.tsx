@@ -16,6 +16,7 @@ import {
   Warehouse,
 } from "lucide-react";
 import { ButtonLink } from "./ButtonLink";
+import { LogoMark } from "./LogoMark";
 import { getPosts } from "@/content/blog";
 import { getProducts } from "@/content/products";
 import {
@@ -94,9 +95,11 @@ export function ProductHeroVisual({ locale }: { locale: Locale }) {
 
             <div className="bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-6 py-9">
               <div className="rounded-[1.6rem] border border-zor-line bg-white p-5 shadow-[0_18px_45px_rgba(8,42,83,0.08)]">
-                <p className="text-xs font-bold uppercase tracking-[0.26em] text-zor-blue">
-                  ZOR Professional
-                </p>
+                <LogoMark
+                  className="h-14 w-14 rounded-2xl shadow-sm ring-1 ring-inset ring-zor-line"
+                  imageClassName="p-1"
+                  sizes="3.5rem"
+                />
                 <h3 className="mt-3 text-4xl font-semibold leading-none text-zor-blue-deep">
                   ZOR 24
                 </h3>
@@ -245,7 +248,11 @@ export function ProductPreviewCards({
               ))}
             </div>
             <div className="mt-4 rounded-xl bg-zor-blue px-4 py-3 text-white">
-              <p className="text-xs font-bold uppercase tracking-[0.2em]">ZOR</p>
+              <LogoMark
+                className="h-10 w-10 rounded-xl shadow-sm ring-1 ring-inset ring-white/70"
+                imageClassName="p-0.5"
+                sizes="2.5rem"
+              />
               <p className="mt-1 text-lg font-semibold">{product.packCount[locale]}</p>
             </div>
           </div>

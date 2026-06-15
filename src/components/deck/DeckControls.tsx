@@ -33,7 +33,7 @@ export function DeckControls({
   );
 
   return (
-    <div className="pointer-events-none fixed bottom-[5.8rem] right-4 z-40 flex items-center gap-2 md:bottom-6 md:right-6">
+    <div className="pointer-events-none fixed bottom-[5.8rem] right-4 z-40 hidden items-center gap-2 md:bottom-6 md:right-6 md:flex lg:bottom-auto lg:top-[5.35rem]">
       <button
         aria-label={labels.previous}
         className={cn(buttonClass, "pointer-events-auto")}

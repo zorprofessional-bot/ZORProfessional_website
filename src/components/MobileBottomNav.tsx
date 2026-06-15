@@ -51,11 +51,11 @@ export function MobileBottomNav({ locale, activeKey, tone = "light" }: MobileBot
     <nav
       aria-label="Mobile navigation"
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-50 border-t px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-[0_-18px_50px_rgba(8,42,83,0.12)] backdrop-blur-xl md:hidden",
+        "fixed bottom-0 left-0 right-0 z-50 border-t px-1.5 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-[0_-18px_50px_rgba(8,42,83,0.12)] backdrop-blur-xl md:hidden",
         dark ? "border-white/14 bg-zor-blue-deep/88" : "border-zor-line bg-white/92",
       )}
     >
-      <div className="mx-auto flex max-w-xl gap-1 overflow-x-auto">
+      <div className="mx-auto grid max-w-xl grid-cols-7 gap-1">
         {mobileNav[locale].map((item) => {
           const Icon = icons[item.key];
           const href = routes[locale][item.key as RouteKey];
@@ -63,16 +63,18 @@ export function MobileBottomNav({ locale, activeKey, tone = "light" }: MobileBot
 
           const content = (
             <>
-              <Icon aria-hidden size={19} strokeWidth={2.1} />
-              <span className="truncate text-[11px] font-bold">{item.label}</span>
+              <span className="flex h-6 items-center justify-center">
+                <Icon aria-hidden size={19} strokeWidth={2.1} />
+              </span>
+              <span className="block w-full truncate text-center text-[10px] font-bold leading-none">{item.label}</span>
             </>
           );
 
           const className = cn(
-            "flex min-h-14 min-w-16 flex-col items-center justify-center gap-1 rounded-2xl px-2 transition",
+            "flex h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 transition",
             active
               ? dark
-                ? "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-white/70"
+                ? "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-white/70 shadow-[0_0_0_3px_rgba(142,201,255,0.18)]"
                 : "bg-white text-zor-blue-deep shadow-sm ring-1 ring-inset ring-zor-line"
               : dark
                 ? "text-white/68 hover:bg-white/10 hover:text-white"

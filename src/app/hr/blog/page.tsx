@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { BlogIndexPage } from "@/components/pages/BlogIndexPage";
+import { getPublishedPosts } from "@/lib/data/blog";
+import { getDeckPageData } from "@/lib/data/deck";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -7,6 +9,11 @@ export const metadata: Metadata = {
     "Kratki vodiči o planiranju potrošnje, toaletnom papiru za apartmane i hrvatskoj proizvodnji.",
 };
 
-export default function Page() {
-  return <BlogIndexPage locale="hr" />;
+export default async function Page() {
+  const [deckData, posts] = await Promise.all([
+    getDeckPageData("hr", "blog"),
+    getPublishedPosts("hr"),
+  ]);
+
+  return <BlogIndexPage deckData={deckData} locale="hr" posts={posts} />;
 }

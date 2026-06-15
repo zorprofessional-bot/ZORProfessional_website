@@ -7,27 +7,38 @@ import {
 import { ContactFormCard } from "@/components/deck/InteractiveDeckCards";
 import { chapterLabels, contactDeck } from "@/content/deck";
 import { getWhatsAppHref, siteContact, type Locale } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
-export function ContactPage({ locale }: { locale: Locale }) {
+type ContactPageProps = {
+  deckData?: DeckPageData;
+  locale: Locale;
+};
+
+export function ContactPage({ deckData, locale }: ContactPageProps) {
   const copy = contactDeck[locale];
   const isHr = locale === "hr";
+  const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
 
   return (
     <DeckPage
       activeKey="contact"
-      chapterLabel={chapterLabels[locale].contact}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].contact}
       locale={locale}
       menuFlow
       slides={[
         {
-          ...copy[0],
-          background: "theme",
-          layout: "split",
-          primaryCta: {
-            label: isHr ? "Pošalji WhatsApp upit" : "Send WhatsApp inquiry",
+          ...slides[0],
+          body: slides[0]?.body ?? copy[0].body,
+          background: slides[0]?.background ?? "theme",
+          layout: slides[0]?.layout ?? "split",
+          primaryCta: slides[0]?.primaryCta ?? {
+            label: isHr ? "PoÅ¡alji WhatsApp upit" : "Send WhatsApp inquiry",
             href: getWhatsAppHref(locale),
           },
-          secondaryCta: {
+          secondaryCta: slides[0]?.secondaryCta ?? {
             label: siteContact.email,
             href: `mailto:${siteContact.email}`,
             variant: "secondary",
@@ -36,42 +47,48 @@ export function ContactPage({ locale }: { locale: Locale }) {
           visual: <WhatsAppPanel locale={locale} tone="dark" />,
         },
         {
-          ...copy[1],
-          background: "dark",
-          layout: "splitReverse",
+          ...slides[1],
+          body: slides[1]?.body ?? copy[1].body,
+          background: slides[1]?.background ?? "dark",
+          layout: slides[1]?.layout ?? "splitReverse",
           tone: "dark",
           visual: <ContactFormCard locale={locale} />,
         },
         {
-          ...copy[2],
-          background: "theme",
-          layout: "split",
+          ...slides[2],
+          body: slides[2]?.body ?? copy[2].body,
+          background: slides[2]?.background ?? "theme",
+          layout: slides[2]?.layout ?? "split",
           tone: "dark",
           visual: (
             <div className="grid w-full gap-4">
               <ContactDetailsVisual locale={locale} tone="dark" />
-              <DeckCardGrid
-                columns="two"
-                iconSet="none"
-                items={[
-                  {
-                    title: siteContact.location,
-                    body: `${siteContact.city} · ${siteContact.company}`,
-                  },
-                  {
-                    title: isHr ? "Dostupnost prije obećanja" : "Availability before promises",
-                    body: isHr
-                      ? "Za konkretan rok i količinu prvo provjeravamo zalihu."
-                      : "For a concrete date and quantity, stock is checked first.",
-                  },
-                ]}
-                tone="dark"
-              />
+              <div className="hidden sm:block">
+                <DeckCardGrid
+                  columns="two"
+                  iconSet="none"
+                  items={[
+                    {
+                      title: siteContact.location,
+                      body: `${siteContact.city} Â· ${siteContact.company}`,
+                    },
+                    {
+                      title: isHr
+                        ? "Dostupnost prije obeÄ‡anja"
+                        : "Availability before promises",
+                      body: isHr
+                        ? "Za konkretan rok i koliÄinu prvo provjeravamo zalihu."
+                        : "For a concrete date and quantity, stock is checked first.",
+                    },
+                  ]}
+                  tone="dark"
+                />
+              </div>
             </div>
           ),
         },
       ]}
-      theme="contact"
+      theme={deckData?.chapter.theme ?? "contact"}
     />
   );
 }

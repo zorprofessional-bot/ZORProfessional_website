@@ -16,18 +16,18 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: "zor-24-everyday",
+    id: "zorpro-24",
     slugs: {
-      hr: "zor-24-svakodnevni",
-      en: "zor-24-everyday",
+      hr: "zorpro-24",
+      en: "zorpro-24",
     },
     name: {
-      hr: "ZOR 24 Svakodnevni",
-      en: "ZOR 24 Everyday",
+      hr: "ZORPro 24",
+      en: "ZORPro 24",
     },
     eyebrow: {
-      hr: "Redovita potrošnja",
-      en: "Regular use",
+      hr: "24 role",
+      en: "24 rolls",
     },
     packCount: {
       hr: "24 role",
@@ -38,16 +38,16 @@ export const products: Product[] = [
       en: "EUR 12.90",
     },
     summary: {
-      hr: "Uravnotežen toaletni papir 24 role za domove, manje urede i redovitu zalihu.",
-      en: "A balanced 24-roll toilet paper pack for homes, smaller offices, and regular stock.",
+      hr: "Praktican paket toaletnog papira za domove, manje urede, apartmane i redovitu zalihu.",
+      en: "A practical toilet paper pack for homes, smaller offices, apartments, and regular stock.",
     },
     detail: {
-      hr: "Pouzdan izbor za svakodnevnu potrošnju kada su važni stabilna zaliha, fer cijena i jednostavna narudžba.",
-      en: "A reliable choice for everyday demand when steady stock, a fair price, and simple ordering matter.",
+      hr: "ZORPro 24 je jednostavan izbor kada su vazni dostupnost, fer cijena i narudzba bez dugog kataloga.",
+      en: "ZORPro 24 is a simple choice when availability, a fair price, and ordering without a long catalogue matter.",
     },
     image: "/visuals/product-range.png",
     highlights: {
-      hr: ["24 role za redovitu potrošnju", "Dobar omjer cijene i dostupnosti", "Jednostavan WhatsApp upit"],
+      hr: ["24 role za redovitu potrosnju", "Dobar omjer cijene i dostupnosti", "Jednostavan WhatsApp upit"],
       en: ["24 rolls for regular use", "Good balance of price and availability", "Simple WhatsApp inquiry"],
     },
     specs: [
@@ -56,86 +56,32 @@ export const products: Product[] = [
         value: { hr: "24 role", en: "24 rolls" },
       },
       {
+        label: { hr: "Slojevi", en: "Layers" },
+        value: { hr: "2 sloja", en: "2 layers" },
+      },
+      {
         label: { hr: "Mock cijena", en: "Mock price" },
         value: { hr: "12,90 EUR", en: "EUR 12.90" },
       },
       {
         label: { hr: "Namjena", en: "Use" },
-        value: { hr: "Domovi, uredi, manje zajednice", en: "Homes, offices, smaller communities" },
-      },
-      {
-        label: { hr: "Pozicija", en: "Positioning" },
-        value: { hr: "Fer svakodnevni izbor", en: "Fair everyday choice" },
+        value: { hr: "Domovi, uredi, apartmani", en: "Homes, offices, apartments" },
       },
     ],
   },
   {
-    id: "zor-24-softer",
+    id: "zorpro-36",
     slugs: {
-      hr: "zor-24-meksi",
-      en: "zor-24-softer",
+      hr: "zorpro-36",
+      en: "zorpro-36",
     },
     name: {
-      hr: "ZOR 24 Mekši",
-      en: "ZOR 24 Softer",
+      hr: "ZORPro 36",
+      en: "ZORPro 36",
     },
     eyebrow: {
-      hr: "Mekši dojam",
-      en: "Softer feel",
-    },
-    packCount: {
-      hr: "24 role",
-      en: "24 rolls",
-    },
-    mockPrice: {
-      hr: "14,90 EUR",
-      en: "EUR 14.90",
-    },
-    summary: {
-      hr: "Mekši wc papir za apartmane, urede i prostore u kojima gostima želite ostaviti uredan dojam.",
-      en: "A softer option for apartments, offices, and spaces where the guest experience should feel neat.",
-    },
-    detail: {
-      hr: "Praktičan izbor kada wc papir treba djelovati uredno, moderno i pouzdano, bez prelaska u luksuzni katalog.",
-      en: "A practical choice when toilet paper should feel neat, modern, and reliable without turning into a luxury catalogue.",
-    },
-    image: "/visuals/product-range.png",
-    highlights: {
-      hr: ["Mekši osjećaj korištenja", "Dobar za apartmane i manje firme", "Jasan pregled potrošnje"],
-      en: ["Softer user feel", "Good for apartments and small companies", "Clear consumption planning"],
-    },
-    specs: [
-      {
-        label: { hr: "Pakiranje", en: "Pack" },
-        value: { hr: "24 role", en: "24 rolls" },
-      },
-      {
-        label: { hr: "Mock cijena", en: "Mock price" },
-        value: { hr: "14,90 EUR", en: "EUR 14.90" },
-      },
-      {
-        label: { hr: "Namjena", en: "Use" },
-        value: { hr: "Apartmani, uredi, gostinjski prostori", en: "Apartments, offices, guest spaces" },
-      },
-      {
-        label: { hr: "Pozicija", en: "Positioning" },
-        value: { hr: "Premium praktično", en: "Practical premium" },
-      },
-    ],
-  },
-  {
-    id: "zor-36-supply",
-    slugs: {
-      hr: "zor-36-zaliha",
-      en: "zor-36-supply",
-    },
-    name: {
-      hr: "ZOR 36 Zaliha",
-      en: "ZOR 36 Supply",
-    },
-    eyebrow: {
-      hr: "Veća zaliha",
-      en: "Higher stock",
+      hr: "36 rola",
+      en: "36 rolls",
     },
     packCount: {
       hr: "36 rola",
@@ -146,22 +92,26 @@ export const products: Product[] = [
       en: "EUR 18.90",
     },
     summary: {
-      hr: "Toaletni papir 36 rola za firme, ustanove i prostore koji žele rjeđe naručivati.",
-      en: "A 36-roll toilet paper pack for companies, institutions, and spaces that want fewer reorders.",
+      hr: "Veci paket za obitelji, apartmane, male firme i zajednice koje zele rjede narucivati.",
+      en: "A larger pack for families, apartments, small companies, and communities that want fewer reorders.",
     },
     detail: {
-      hr: "Namijenjeno objektima koji žele mirniju zalihu, manje prekida i lakši dogovor oko redovitih količina.",
-      en: "Designed for spaces that want calmer stock, fewer interruptions, and easier coordination around recurring quantities.",
+      hr: "ZORPro 36 pomaze drzati mirniju zalihu za prostore s vecom mjesecnom potrosnjom.",
+      en: "ZORPro 36 helps keep calmer stock for spaces with higher monthly demand.",
     },
     image: "/visuals/product-range.png",
     highlights: {
-      hr: ["36 rola za veću mjesečnu potrošnju", "Pomaže planirati nabavu", "Praktično za ustanove i zajednice"],
-      en: ["36 rolls for higher monthly demand", "Helps plan procurement", "Practical for institutions and communities"],
+      hr: ["36 rola za vecu zalihu", "Prakticno za redovite kolicine", "Manje prekida u nabavi"],
+      en: ["36 rolls for higher stock", "Practical for recurring quantities", "Fewer procurement interruptions"],
     },
     specs: [
       {
         label: { hr: "Pakiranje", en: "Pack" },
         value: { hr: "36 rola", en: "36 rolls" },
+      },
+      {
+        label: { hr: "Slojevi", en: "Layers" },
+        value: { hr: "2 sloja", en: "2 layers" },
       },
       {
         label: { hr: "Mock cijena", en: "Mock price" },
@@ -170,10 +120,6 @@ export const products: Product[] = [
       {
         label: { hr: "Namjena", en: "Use" },
         value: { hr: "Firme, ustanove, zajednice", en: "Companies, institutions, communities" },
-      },
-      {
-        label: { hr: "Pozicija", en: "Positioning" },
-        value: { hr: "Pouzdana zaliha", en: "Reliable stock" },
       },
     ],
   },

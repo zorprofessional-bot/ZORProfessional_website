@@ -4,46 +4,69 @@ import {
   DeckCardGrid,
 } from "@/components/deck/DeckVisuals";
 import { blogDeck, chapterLabels } from "@/content/deck";
-import { getPosts } from "@/content/blog";
+import { getPosts, type BlogPost } from "@/content/blog";
 import { routes, type Locale } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
-export function BlogIndexPage({ locale }: { locale: Locale }) {
+type BlogIndexPageProps = {
+  deckData?: DeckPageData;
+  locale: Locale;
+  posts?: Array<BlogPost & { href: string }>;
+};
+
+export function BlogIndexPage({
+  deckData,
+  locale,
+  posts = getPosts(locale),
+}: BlogIndexPageProps) {
   const copy = blogDeck[locale];
-  const posts = getPosts(locale);
   const isHr = locale === "hr";
+  const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
+  const guidePosts = posts.filter(
+    (post) => post.id === "paper-planning" || post.id === "apartments",
+  );
+  const guideVisualPosts = guidePosts.length > 0 ? guidePosts : posts.slice(0, 2);
+  const productionPostHref =
+    posts.find((post) => post.id === "local-production")?.href ?? posts[0]?.href;
 
   return (
     <DeckPage
       activeKey="blog"
-      chapterLabel={chapterLabels[locale].blog}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].blog}
       locale={locale}
       menuFlow
       slides={[
         {
-          ...copy[0],
-          background: "theme",
-          layout: "split",
-          primaryCta: {
+          ...slides[0],
+          body: slides[0]?.body ?? copy[0].body,
+          background: slides[0]?.background ?? "theme",
+          layout: slides[0]?.layout ?? "split",
+          primaryCta: slides[0]?.primaryCta ?? {
             label: isHr ? "Pogledaj proizvode" : "View products",
             href: routes[locale].products,
           },
           visual: <BlogCardsVisual locale={locale} posts={posts.slice(0, 2)} />,
         },
         {
-          ...copy[1],
-          background: "editorial",
-          layout: "splitReverse",
+          ...slides[1],
+          body: slides[1]?.body ?? copy[1].body,
+          background: slides[1]?.background ?? "editorial",
+          layout: slides[1]?.layout ?? "splitReverse",
           visual: (
             <BlogCardsVisual
               locale={locale}
-              posts={posts.filter((post) => post.id === "paper-planning" || post.id === "apartments")}
+              posts={guideVisualPosts}
             />
           ),
         },
         {
-          ...copy[2],
-          background: "light",
-          layout: "split",
+          ...slides[2],
+          body: slides[2]?.body ?? copy[2].body,
+          background: slides[2]?.background ?? "light",
+          layout: slides[2]?.layout ?? "split",
           visual: (
             <DeckCardGrid
               columns="two"
@@ -51,17 +74,19 @@ export function BlogIndexPage({ locale }: { locale: Locale }) {
               items={[
                 {
                   meta: isHr ? "Proizvodnja" : "Production",
-                  title: isHr ? "Lokalna proizvodnja i opskrba" : "Local production and supply",
+                  title: isHr
+                    ? "Lokalna proizvodnja i opskrba"
+                    : "Local production and supply",
                   body: isHr
-                    ? "Kratko objašnjenje zašto blizina pogona pomaže kupcu."
+                    ? "Kratko objaÅ¡njenje zaÅ¡to blizina pogona pomaÅ¾e kupcu."
                     : "A short explanation of why nearby production helps the buyer.",
-                  href: posts.find((post) => post.id === "local-production")?.href,
+                  href: productionPostHref,
                 },
                 {
                   meta: isHr ? "Kupnja" : "Buying",
                   title: isHr ? "Kako postaviti bolji upit" : "How to ask a better question",
                   body: isHr
-                    ? "Količina, prostor i rok su važniji od dugog formulara."
+                    ? "KoliÄina, prostor i rok su vaÅ¾niji od dugog formulara."
                     : "Quantity, space, and timing matter more than a long form.",
                 },
               ]}
@@ -69,7 +94,7 @@ export function BlogIndexPage({ locale }: { locale: Locale }) {
           ),
         },
       ]}
-      theme="blog"
+      theme={deckData?.chapter.theme ?? "blog"}
     />
   );
 }

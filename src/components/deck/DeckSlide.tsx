@@ -18,7 +18,7 @@ const backgroundClasses = {
 
 export function DeckSlide({
   actions,
-  align = "left",
+  align = "center",
   background = "theme",
   body,
   eyebrow,
@@ -38,7 +38,8 @@ export function DeckSlide({
   const content = (
     <div
       className={cn(
-        "min-w-0",
+        "order-1 min-w-0",
+        (layout === "splitReverse" || layout === "visualFirst") && "lg:order-2",
         centered ? "mx-auto max-w-3xl text-center" : "max-w-2xl",
         layout === "dense" && "max-w-xl",
       )}
@@ -55,7 +56,7 @@ export function DeckSlide({
       ) : null}
       <h1
         className={cn(
-          "text-3xl font-semibold leading-[1.04] sm:text-5xl lg:text-6xl",
+          "text-3xl font-semibold leading-[1.08] sm:text-5xl sm:leading-[1.04] lg:text-6xl",
           layout === "dense" && "lg:text-5xl",
         )}
         id={`${id}-title`}
@@ -81,7 +82,7 @@ export function DeckSlide({
           {allActions.map((action) =>
             action ? (
               <ButtonLink
-                className="w-full sm:w-auto"
+                className={cn("w-full sm:w-auto", action.variant === "secondary" && "max-sm:hidden")}
                 href={action.href}
                 key={`${action.href}-${action.label}`}
                 onDark={onDark}
@@ -97,7 +98,12 @@ export function DeckSlide({
   );
 
   const visualNode = visual ? (
-    <div className="flex min-h-0 min-w-0 items-center justify-center overflow-hidden">
+    <div
+      className={cn(
+        "order-2 flex min-h-0 w-full min-w-0 items-center justify-center overflow-hidden",
+        (layout === "splitReverse" || layout === "visualFirst") && "lg:order-1",
+      )}
+    >
       {visual}
     </div>
   ) : null;
@@ -107,14 +113,14 @@ export function DeckSlide({
       aria-labelledby={`${id}-title`}
       aria-roledescription="slide"
       className={cn(
-        "h-full overflow-hidden",
+        "min-h-full md:h-full md:overflow-hidden",
         backgroundClasses[background],
       )}
       data-slide-id={id}
     >
       <div
         className={cn(
-          "mx-auto grid h-full max-w-7xl items-center gap-5 px-4 py-5 sm:px-6 md:gap-8 md:px-8 lg:px-10",
+          "mx-auto grid min-h-full max-w-7xl content-start justify-items-center gap-5 px-4 pb-16 pt-6 sm:px-6 md:h-full md:content-center md:items-center md:gap-8 md:px-8 md:py-5 lg:px-10",
           hasVisual && layout !== "center"
             ? "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
             : "place-items-center",

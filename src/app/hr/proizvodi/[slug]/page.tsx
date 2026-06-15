@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetailPage } from "@/components/pages/ProductDetailPage";
-import { getProductBySlug, products } from "@/content/products";
+import { products } from "@/content/products";
+import { getDeckPageData } from "@/lib/data/deck";
+import { getProductBySlug } from "@/lib/data/products";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return products.map((product) => ({ slug: product.slugs.hr }));
@@ -13,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug("hr", slug);
+  const product = await getProductBySlug("hr", slug);
 
   return {
     title: product?.name.hr ?? "Proizvod",
@@ -23,11 +27,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  const product = getProductBySlug("hr", slug);
+  const [deckData, product] = await Promise.all([
+    getDeckPageData("hr", "proizvodi"),
+    getProductBySlug("hr", slug),
+  ]);
 
   if (!product) {
     notFound();
   }
 
-  return <ProductDetailPage locale="hr" product={product} />;
+  return <ProductDetailPage deckData={deckData} locale="hr" product={product} />;
 }

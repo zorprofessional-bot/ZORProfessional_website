@@ -124,8 +124,8 @@ export const productsDeck = {
     overview: {
       id: "pregled",
       eyebrow: "Proizvodi",
-      title: "Tri jasna paketa, bez webshop pritiska.",
-      body: "Pregled služi odluci: koliko rola, za kakav prostor i koji je sljedeći korak.",
+      title: "Dva jasna paketa, bez webshop pritiska.",
+      body: "Pregled služi odluci: ZORPro 24 ili ZORPro 36, za kakav prostor i koji je sljedeći korak.",
     },
     business: {
       id: "poslovne-kolicine",
@@ -138,8 +138,8 @@ export const productsDeck = {
     overview: {
       id: "overview",
       eyebrow: "Products",
-      title: "Three clear packs, without webshop pressure.",
-      body: "The overview supports a decision: roll count, space type, and the next step.",
+      title: "Two clear packs, without webshop pressure.",
+      body: "The overview supports a decision: ZORPro 24 or ZORPro 36, space type, and the next step.",
     },
     business: {
       id: "business-quantities",

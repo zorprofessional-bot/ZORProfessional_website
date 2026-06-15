@@ -19,6 +19,7 @@ import {
   Warehouse,
 } from "lucide-react";
 import { ButtonLink } from "@/components/ButtonLink";
+import { LogoMark } from "@/components/LogoMark";
 import type { BlogPost } from "@/content/blog";
 import type { Product } from "@/content/products";
 import {
@@ -71,7 +72,6 @@ export function ImagePanel({
   alt,
   priority = false,
   src,
-  tone = "light",
 }: {
   alt: string;
   priority?: boolean;
@@ -79,12 +79,7 @@ export function ImagePanel({
   tone?: VisualTone;
 }) {
   return (
-    <div
-      className={cn(
-        "relative h-[30svh] max-h-[25rem] min-h-48 w-full overflow-hidden rounded-[1.25rem] border sm:h-[42svh] lg:h-[64svh]",
-        tone === "dark" ? "border-white/18 bg-white/10" : "border-white/70 bg-white shadow-zor-soft",
-      )}
-    >
+    <div className="relative h-[22svh] max-h-48 min-h-40 w-full overflow-hidden rounded-[1.25rem] sm:h-[42svh] sm:max-h-[25rem] lg:h-[64svh]">
       <Image
         alt={alt}
         className="object-cover"
@@ -93,7 +88,6 @@ export function ImagePanel({
         sizes="(min-width: 1024px) 48vw, 100vw"
         src={src}
       />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18),transparent_48%,rgba(6,36,75,0.14))]" />
     </div>
   );
 }
@@ -102,7 +96,7 @@ export function DeckCardGrid({
   columns = "two",
   iconSet = "audience",
   items,
-  tone = "light",
+  tone = "dark",
 }: {
   columns?: "two" | "three" | "four";
   iconSet?: "audience" | "process" | "none";
@@ -113,9 +107,9 @@ export function DeckCardGrid({
     <div
       className={cn(
         "grid w-full gap-3",
-        columns === "two" && "grid-cols-2",
+        columns === "two" && "grid-cols-1 sm:grid-cols-2",
         columns === "three" && "grid-cols-2 sm:grid-cols-3",
-        columns === "four" && "grid-cols-2 xl:grid-cols-4",
+        columns === "four" && "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4",
       )}
     >
       {items.map((item, index) => {
@@ -130,31 +124,33 @@ export function DeckCardGrid({
             {iconSet !== "none" ? (
               <div
                 className={cn(
-                  "mb-4 grid h-10 w-10 place-items-center rounded-xl",
+                  "grid h-10 w-10 shrink-0 place-items-center rounded-xl sm:mx-auto sm:mb-4",
                   tone === "dark" ? "bg-white text-zor-blue" : "bg-zor-blue-soft text-zor-blue",
                 )}
               >
                 <Icon aria-hidden size={20} strokeWidth={2.15} />
               </div>
             ) : null}
-            {item.meta ? (
-              <p
-                className={cn(
-                  "mb-2 text-xs font-bold uppercase tracking-[0.18em]",
-                  tone === "dark" ? "text-white/62" : "text-zor-blue",
-                )}
-              >
-                {item.meta}
-              </p>
-            ) : null}
-            <h3 className="text-base font-semibold leading-snug sm:text-lg">{item.title}</h3>
-            {item.body ? (
-              <p className={cn("mt-2 text-xs leading-5 sm:text-sm sm:leading-6", mutedClass(tone))}>{item.body}</p>
-            ) : null}
+            <div className="min-w-0">
+              {item.meta ? (
+                <p
+                  className={cn(
+                    "mb-1 text-[10px] font-bold uppercase tracking-[0.16em] sm:mb-2 sm:text-xs sm:tracking-[0.18em]",
+                    tone === "dark" ? "text-white/62" : "text-zor-blue",
+                  )}
+                >
+                  {item.meta}
+                </p>
+              ) : null}
+              <h3 className="text-sm font-semibold leading-snug sm:text-lg">{item.title}</h3>
+              {item.body ? (
+                <p className={cn("mt-1 text-xs leading-5 sm:mt-2 sm:text-sm sm:leading-6", mutedClass(tone))}>{item.body}</p>
+              ) : null}
+            </div>
           </>
         );
         const className = cn(
-          "min-h-28 rounded-[1.25rem] p-4 transition sm:min-h-32 sm:p-5",
+          "flex min-h-0 items-start gap-3 rounded-[1.25rem] p-3 transition sm:block sm:min-h-32 sm:p-5 sm:text-center",
           panelClasses(tone),
           item.href && "hover:-translate-y-0.5",
         );
@@ -177,7 +173,7 @@ export function ProductPackVisual({
   count,
   label,
   price,
-  tone = "light",
+  tone = "dark",
 }: {
   count: string;
   label: string;
@@ -187,8 +183,8 @@ export function ProductPackVisual({
   const rollCount = count.includes("36") ? 12 : 8;
 
   return (
-    <div className={cn("w-full max-w-lg rounded-[1.5rem] p-5", panelClasses(tone))}>
-      <div className="grid grid-cols-4 gap-2 rounded-[1.1rem] bg-white p-4">
+    <div className={cn("flex w-full max-w-lg items-stretch gap-3 rounded-[1.5rem] p-3 sm:block sm:p-5", panelClasses(tone))}>
+      <div className="grid w-24 shrink-0 grid-cols-4 gap-1 rounded-[1.1rem] bg-white p-3 sm:w-full sm:gap-2 sm:p-4">
         {Array.from({ length: rollCount }).map((_, index) => (
           <span
             className="aspect-square rounded-full bg-[radial-gradient(circle_at_48%_48%,#ffffff_0_24%,#d8e3ef_25%_36%,#ffffff_37%_100%)] shadow-inner"
@@ -196,10 +192,14 @@ export function ProductPackVisual({
           />
         ))}
       </div>
-      <div className="mt-4 rounded-[1.1rem] bg-zor-blue p-5 text-white">
-        <p className="text-xs font-bold uppercase tracking-[0.2em]">ZOR Professional</p>
-        <h3 className="mt-2 text-3xl font-semibold">{label}</h3>
-        <div className="mt-4 flex items-center justify-between gap-3">
+      <div className="min-w-0 flex-1 rounded-[1.1rem] bg-zor-blue p-4 text-white sm:mt-4 sm:p-5 sm:text-center">
+        <LogoMark
+          className="h-10 w-10 rounded-xl shadow-sm ring-1 ring-inset ring-white/70 sm:mx-auto"
+          imageClassName="p-0.5"
+          sizes="2.5rem"
+        />
+        <h3 className="mt-2 text-2xl font-semibold sm:text-3xl">{label}</h3>
+        <div className="mt-3 grid gap-1 sm:mt-4 sm:flex sm:items-center sm:justify-center sm:gap-3">
           <p className="text-sm font-bold">{count}</p>
           {price ? <p className="text-sm font-bold">{price}</p> : null}
         </div>
@@ -211,21 +211,21 @@ export function ProductPackVisual({
 export function ProductCardsVisual({
   locale,
   products,
-  tone = "light",
+  tone = "dark",
 }: {
   locale: Locale;
   products: Array<Product & { href: string }>;
   tone?: VisualTone;
 }) {
   return (
-    <div className="grid w-full grid-cols-3 gap-3">
+    <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
       {products.map((product) => (
         <Link
-          className={cn("rounded-[1.25rem] p-4 transition hover:-translate-y-0.5", panelClasses(tone))}
+          className={cn("flex items-center gap-3 rounded-[1.25rem] p-3 transition hover:-translate-y-0.5 sm:block sm:p-4", panelClasses(tone))}
           href={product.href}
           key={product.id}
         >
-          <div className="grid grid-cols-4 gap-1 rounded-xl bg-white p-3">
+          <div className="grid w-20 shrink-0 grid-cols-4 gap-1 rounded-xl bg-white p-2 sm:w-full sm:p-3">
             {Array.from({ length: product.id.includes("36") ? 12 : 8 }).map((_, index) => (
               <span
                 className="aspect-square rounded-full bg-[radial-gradient(circle_at_48%_48%,#ffffff_0_24%,#d8e3ef_25%_36%,#ffffff_37%_100%)] shadow-inner"
@@ -233,18 +233,20 @@ export function ProductCardsVisual({
               />
             ))}
           </div>
-          <p
-            className={cn(
-              "mt-4 text-xs font-bold uppercase tracking-[0.18em]",
-              tone === "dark" ? "text-white/62" : "text-zor-blue",
-            )}
-          >
-            {product.eyebrow[locale]}
-          </p>
-          <h3 className="mt-2 text-base font-semibold leading-tight sm:text-xl">{product.name[locale]}</h3>
-          <p className={cn("mt-2 text-xs leading-5 sm:text-sm sm:leading-6", mutedClass(tone))}>
-            {product.packCount[locale]} / {product.mockPrice[locale]}
-          </p>
+          <div className="min-w-0 sm:text-center">
+            <p
+              className={cn(
+                "text-[10px] font-bold uppercase tracking-[0.16em] sm:mt-4 sm:text-xs sm:tracking-[0.18em]",
+                tone === "dark" ? "text-white/62" : "text-zor-blue",
+              )}
+            >
+              {product.eyebrow[locale]}
+            </p>
+            <h3 className="mt-1 text-base font-semibold leading-tight sm:mt-2 sm:text-xl">{product.name[locale]}</h3>
+            <p className={cn("mt-1 text-xs leading-5 sm:mt-2 sm:text-sm sm:leading-6", mutedClass(tone))}>
+              {product.packCount[locale]} / {product.mockPrice[locale]}
+            </p>
+          </div>
         </Link>
       ))}
     </div>
@@ -254,7 +256,7 @@ export function ProductCardsVisual({
 export function ProcessRail({
   activeIndex,
   steps,
-  tone = "light",
+  tone = "dark",
 }: {
   activeIndex?: number;
   steps: CardItem[];
@@ -305,7 +307,6 @@ export function ProcessRail({
 export function ProcessStepVisual({
   step,
   stepIndex,
-  tone = "light",
   totalSteps,
 }: {
   step: CardItem;
@@ -317,8 +318,8 @@ export function ProcessStepVisual({
   const stepNumber = String(stepIndex + 1).padStart(2, "0");
 
   return (
-    <figure className={cn("w-full max-w-xl overflow-hidden rounded-[1.25rem]", panelClasses(tone))}>
-      <div className="relative h-[29svh] min-h-52 sm:h-[42svh] lg:h-[58svh]">
+    <figure className="w-full max-w-xl overflow-hidden rounded-[1.25rem]">
+      <div className="relative h-[24svh] min-h-44 sm:h-[42svh] lg:h-[58svh]">
         <Image
           alt={step.title}
           className="object-cover"
@@ -333,7 +334,7 @@ export function ProcessStepVisual({
             <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-zor-blue text-white">
               <Icon aria-hidden size={21} />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 sm:text-center">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-zor-blue">
                 {stepNumber}/{String(totalSteps).padStart(2, "0")}
               </p>
@@ -378,17 +379,17 @@ export function RouteChoiceGrid({ locale }: { locale: Locale }) {
 
         return (
           <Link
-            className="group flex items-center justify-between gap-4 rounded-[1.25rem] border border-white/18 bg-white/10 p-5 text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
+            className="group flex items-center justify-between gap-3 rounded-[1.25rem] border border-white/18 bg-white/10 p-3 text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 sm:justify-center sm:gap-4 sm:p-5"
             href={item.href}
             key={item.href}
           >
-            <span className="flex items-center gap-4">
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-white text-zor-blue">
+            <span className="flex items-center gap-3 sm:gap-4">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-zor-blue sm:h-11 sm:w-11">
                 <Icon aria-hidden size={21} />
               </span>
-              <span className="text-lg font-semibold">{item.label}</span>
+              <span className="text-base font-semibold sm:text-lg">{item.label}</span>
             </span>
-            <span aria-hidden className="text-xl transition group-hover:translate-x-0.5">
+            <span aria-hidden className="text-xl transition group-hover:translate-x-0.5 sm:hidden">
               &gt;
             </span>
           </Link>
@@ -430,12 +431,12 @@ export function ContactDetailsVisual({ locale, tone = "dark" }: { locale: Locale
 
         return (
           <div
-            className={cn("flex items-center gap-4 rounded-[1.25rem] p-4", panelClasses(tone))}
+            className={cn("flex items-center gap-3 rounded-[1.25rem] p-3 sm:gap-4 sm:p-4", panelClasses(tone))}
             key={detail.label}
           >
             <div
               className={cn(
-                "grid h-11 w-11 shrink-0 place-items-center rounded-xl",
+                "grid h-10 w-10 shrink-0 place-items-center rounded-xl sm:h-11 sm:w-11",
                 tone === "dark" ? "bg-white text-zor-blue" : "bg-zor-blue-soft text-zor-blue",
               )}
             >
@@ -445,7 +446,7 @@ export function ContactDetailsVisual({ locale, tone = "dark" }: { locale: Locale
               <p className={cn("text-xs font-bold uppercase tracking-[0.18em]", mutedClass(tone))}>
                 {detail.label}
               </p>
-              <p className="mt-1 text-sm font-semibold">{detail.value}</p>
+              <p className="mt-1 text-[13px] font-semibold leading-snug sm:text-sm">{detail.value}</p>
             </div>
           </div>
         );
@@ -457,7 +458,7 @@ export function ContactDetailsVisual({ locale, tone = "dark" }: { locale: Locale
 export function BlogCardsVisual({
   locale,
   posts,
-  tone = "light",
+  tone = "dark",
 }: {
   locale: Locale;
   posts: Array<BlogPost & { href: string }>;
@@ -467,11 +468,11 @@ export function BlogCardsVisual({
     <div className="grid w-full gap-3">
       {posts.map((post) => (
         <Link
-          className={cn("rounded-[1.25rem] p-5 transition hover:-translate-y-0.5", panelClasses(tone))}
+          className={cn("rounded-[1.25rem] p-3 transition hover:-translate-y-0.5 sm:p-5 sm:text-center", panelClasses(tone))}
           href={post.href}
           key={post.id}
         >
-          <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="mb-3 flex items-center justify-between gap-3 sm:justify-center">
             <p
               className={cn(
                 "text-xs font-bold uppercase tracking-[0.18em]",
@@ -480,10 +481,10 @@ export function BlogCardsVisual({
             >
               {post.eyebrow[locale]}
             </p>
-            <Newspaper aria-hidden className={tone === "dark" ? "text-white/54" : "text-zor-blue"} size={18} />
+            <Newspaper aria-hidden className={cn("sm:hidden", tone === "dark" ? "text-white/54" : "text-zor-blue")} size={18} />
           </div>
-          <h3 className="text-xl font-semibold leading-snug">{post.title[locale]}</h3>
-          <p className={cn("mt-2 text-sm leading-6", mutedClass(tone))}>{post.excerpt[locale]}</p>
+          <h3 className="text-base font-semibold leading-snug sm:text-xl">{post.title[locale]}</h3>
+          <p className={cn("mt-2 hidden text-sm leading-6 sm:block", mutedClass(tone))}>{post.excerpt[locale]}</p>
         </Link>
       ))}
     </div>
@@ -526,16 +527,16 @@ export function WhatsAppPanel({ locale, tone = "dark" }: { locale: Locale; tone?
   const isHr = locale === "hr";
 
   return (
-    <div className={cn("w-full max-w-lg rounded-[1.5rem] p-6", panelClasses(tone))}>
+    <div className={cn("w-full max-w-lg rounded-[1.5rem] p-4 sm:p-6 sm:text-center", panelClasses(tone))}>
       <div
         className={cn(
-          "grid h-12 w-12 place-items-center rounded-xl",
+          "grid h-12 w-12 place-items-center rounded-xl sm:mx-auto",
           tone === "dark" ? "bg-white text-zor-blue" : "bg-zor-blue-soft text-zor-blue",
         )}
       >
         <MessageCircle aria-hidden size={23} />
       </div>
-      <h3 className="mt-5 text-2xl font-semibold">
+      <h3 className="mt-4 text-xl font-semibold sm:mt-5 sm:text-2xl">
         {isHr ? "Jedna poruka je dovoljna za početak." : "One message is enough to start."}
       </h3>
       <p className={cn("mt-3 text-sm leading-6", mutedClass(tone))}>
@@ -543,7 +544,7 @@ export function WhatsAppPanel({ locale, tone = "dark" }: { locale: Locale; tone?
           ? "Napišite prostor, okvirnu potrošnju i želite li ponudu za dom, firmu, apartman ili ustanovu."
           : "Send the space type, rough demand, and whether the offer is for a home, company, apartment, or institution."}
       </p>
-      <ButtonLink className="mt-6 w-full" href={getWhatsAppHref(locale)} onDark={tone === "dark"}>
+      <ButtonLink className="mt-5 w-full sm:mt-6" href={getWhatsAppHref(locale)} onDark={tone === "dark"}>
         WhatsApp
       </ButtonLink>
     </div>

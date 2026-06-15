@@ -22,6 +22,17 @@ Public pages use a deck model:
 
 Normal window scrolling is not part of the public presentation experience.
 
+## Supabase Content Backend
+
+Supabase uses the same public content language:
+
+- `deck_chapters` are main navigation chapters.
+- `deck_slides` are full-screen deck slides inside a chapter.
+- There is no `page_sections` model.
+- Products, blog posts, career positions, leads, applications, settings, and storage assets live in separate Supabase tables.
+
+Local typed content remains the fallback for development and for builds without Supabase env variables.
+
 ## Homepage Slides
 
 - Hero: Croatian production, availability, WhatsApp inquiry, and products CTA.
@@ -31,17 +42,16 @@ Normal window scrolling is not part of the public presentation experience.
 
 ## Product Content
 
-Product data lives in `src/content/products.ts`. Current mock products:
+Product data can come from Supabase `products`. Fallback product data lives in `src/content/products.ts`. Current fallback products:
 
-- ZOR 24 Svakodnevni
-- ZOR 24 Mekši
-- ZOR 36 Zaliha
+- ZORPro 24
+- ZORPro 36
 
 Product pages remain presentation slides, not webshop pages. Use inquiry CTAs, not cart controls.
 
 ## Blog Content
 
-Blog data lives in `src/content/blog.ts`. Blog listing pages are deck-style. Blog article details may use an internal scrollable reader panel while the outer deck shell stays fixed.
+Blog data can come from Supabase `blog_posts`. Fallback blog data lives in `src/content/blog.ts`. Blog listing pages are deck-style. Blog article details may use an internal scrollable reader panel while the outer deck shell stays fixed.
 
 ## SEO Strategy
 
@@ -61,4 +71,4 @@ Use these phrases only where they read naturally. Avoid keyword stuffing, repeat
 
 ## Future Workflow
 
-When adding a public page, first decide the chapter and slide list. Add concise content to typed content modules, then compose the page with `DeckPage` and `DeckSlide` variants. Add a new visual component only when the existing deck visuals cannot express the content clearly.
+When adding a public page, first decide the chapter and slide list. Add concise fallback content to typed content modules, add matching Supabase chapter/slide seed data if it should be editable, then compose the page with `DeckPage` and `DeckSlide` variants. Add a new visual component only when the existing deck visuals cannot express the content clearly.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactPage } from "@/components/pages/ContactPage";
+import { getDeckPageData } from "@/lib/data/deck";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -7,6 +8,8 @@ export const metadata: Metadata = {
     "Contact ZOR Professional for toilet paper supply, company inquiries, apartments, institutions, production, and careers.",
 };
 
-export default function Page() {
-  return <ContactPage locale="en" />;
+export default async function Page() {
+  const deckData = await getDeckPageData("en", "contact");
+
+  return <ContactPage deckData={deckData} locale="en" />;
 }

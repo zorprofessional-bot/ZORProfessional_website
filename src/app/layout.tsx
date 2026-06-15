@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   },
   description:
     "ZOR Professional is a premium Croatian toilet paper presentation website foundation for homes, companies, apartments, institutions, production, careers, and contact.",
+  icons: {
+    icon: [{ url: "/brand/zor-icon.png", type: "image/png", sizes: "1024x1024" }],
+    apple: [{ url: "/brand/zor-icon.png", type: "image/png", sizes: "1024x1024" }],
+  },
 };
 
 export default function RootLayout({

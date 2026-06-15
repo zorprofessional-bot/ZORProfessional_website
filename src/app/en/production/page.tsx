@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ProductionPage } from "@/components/pages/ProductionPage";
+import { getDeckPageData } from "@/lib/data/deck";
 
 export const metadata: Metadata = {
   title: "Production",
@@ -7,6 +8,8 @@ export const metadata: Metadata = {
     "Croatian toilet paper production by ZOR Professional with practical logistics at Robni terminali Jankomir.",
 };
 
-export default function Page() {
-  return <ProductionPage locale="en" />;
+export default async function Page() {
+  const deckData = await getDeckPageData("en", "production");
+
+  return <ProductionPage deckData={deckData} locale="en" />;
 }

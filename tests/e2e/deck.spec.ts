@@ -47,9 +47,25 @@ test("home chapter keeps one tab background and flows to products", async ({ pag
 test("first product slide can move back to the last home slide", async ({ page }) => {
   await page.goto("/hr/proizvodi?slide=pregled");
 
+  await expect(page.locator("#pregled-title")).toBeVisible();
+
   await page.keyboard.press("ArrowLeft");
   await expect(page).toHaveURL(/\/hr\?slide=brzi-put-dalje$/);
   await expect(page.getByRole("heading", { name: /Odaberite sljedeći korak/ })).toBeVisible();
+});
+
+test("products use ZORPro fallback slugs", async ({ page }) => {
+  await page.goto("/hr/proizvodi?slide=zorpro-24");
+
+  await expect(page.locator("#zorpro-24-title")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Detalji proizvoda" })).toHaveAttribute(
+    "href",
+    "/hr/proizvodi/zorpro-24",
+  );
+
+  await page.goto("/en/products/zorpro-36");
+  await expect(page.locator("#zorpro-36-title")).toBeVisible();
+  await expect(page).toHaveURL(/\/en\/products\/zorpro-36$/);
 });
 
 test("deep-linked home slide hydrates without control mismatch", async ({ page }) => {
@@ -69,8 +85,12 @@ test("deep-linked home slide hydrates without control mismatch", async ({ page }
 test("contact stays at the end of the menu flow", async ({ page }) => {
   await page.goto("/hr/kontakt?slide=lokacija");
 
+  await expect(page.locator("#lokacija-title")).toBeVisible();
+
   const nextButton = page.getByRole("button", { name: "Sljedeći slide" });
-  await expect(nextButton).toBeDisabled();
+  if ((await nextButton.count()) > 0) {
+    await expect(nextButton).toBeDisabled();
+  }
 
   const currentUrl = page.url();
   await page.keyboard.press("ArrowRight");
@@ -118,5 +138,19 @@ test("blog article uses an internal reader while the shell stays fixed", async (
 
   await expect(page.getByRole("heading", { name: /Reader panel/ })).toBeVisible();
   await expect(page.locator("[data-deck-scroll]")).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+});
+
+test("contact form keeps a fallback path when Supabase is not configured", async ({ page }) => {
+  await page.goto("/hr/kontakt?slide=forma");
+
+  const form = page.locator("form");
+  await form.getByLabel("Ime ili firma").fill("Apartmani Zagreb");
+  await form.getByLabel("Email ili telefon").fill("test@example.com");
+  await form.getByRole("textbox", { name: "Poruka" }).fill("Trebamo okvirnu ponudu za ZORPro 36.");
+  await form.getByRole("button", { name: "Posalji upit" }).click();
+
+  await expect(page.getByRole("status")).toContainText("Supabase nije konfiguriran lokalno");
+  await expect(page.getByRole("link", { name: "Otvori email" })).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
 });

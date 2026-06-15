@@ -34,7 +34,7 @@ The public `/hr` and `/en` routes use a chapter-and-slide deck model.
 
 ## Exclusions
 
-Do not add Supabase, Shopify, checkout, cart flows, real admin features, pricing automation, or complex business logic at this stage. Product prices are mock package prices only.
+Supabase is now allowed as the optional content and lead backend for chapters, slides, products, blog posts, careers, settings, leads, applications, and storage. Do not add Shopify, checkout, cart flows, a full admin UI, pricing automation, or complex business logic at this stage. Product prices are placeholder package prices until confirmed.
 
 ## Tone
 

@@ -11,31 +11,41 @@ import {
   valueCards,
 } from "@/content/deck";
 import { getWhatsAppHref, routes, type Locale } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
 type HomePageProps = {
+  deckData?: DeckPageData;
   locale: Locale;
 };
 
-export function HomePage({ locale }: HomePageProps) {
+export function HomePage({ deckData, locale }: HomePageProps) {
   const copy = homeDeck[locale];
   const isHr = locale === "hr";
+  const hero = resolveDeckSlideContent(deckData, copy.hero);
+  const audience = resolveDeckSlideContent(deckData, copy.audience, ["audience"]);
+  const why = resolveDeckSlideContent(deckData, copy.why, ["why-zor"]);
+  const quickPath = resolveDeckSlideContent(deckData, copy.quickPath, ["next-step"]);
 
   return (
     <DeckPage
       activeKey="home"
-      chapterLabel={chapterLabels[locale].home}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].home}
       locale={locale}
       menuFlow
       slides={[
         {
-          ...copy.hero,
-          background: "theme",
-          layout: "split",
-          primaryCta: {
-            label: isHr ? "Pošalji WhatsApp upit" : "Send WhatsApp inquiry",
+          ...hero,
+          body: hero.body ?? copy.hero.body,
+          background: hero.background ?? "theme",
+          layout: hero.layout ?? "split",
+          primaryCta: hero.primaryCta ?? {
+            label: isHr ? "PoÅ¡alji WhatsApp upit" : "Send WhatsApp inquiry",
             href: getWhatsAppHref(locale),
           },
-          secondaryCta: {
+          secondaryCta: hero.secondaryCta ?? {
             label: isHr ? "Pogledaj proizvode" : "View products",
             href: routes[locale].products,
             variant: "secondary",
@@ -49,34 +59,39 @@ export function HomePage({ locale }: HomePageProps) {
                   : "ZOR Professional toilet paper"
               }
               priority
-              src="/visuals/hero-paper.png"
+              src={hero.imageUrl ?? "/visuals/hero-paper.png"}
               tone="dark"
             />
           ),
         },
         {
-          ...copy.audience,
-          background: "light",
-          layout: "splitReverse",
+          ...audience,
+          body: audience.body ?? copy.audience.body,
+          background: audience.background ?? "light",
+          layout: audience.layout ?? "splitReverse",
           tone: "light",
-          visual: <DeckCardGrid columns="two" items={audienceCards[locale]} />,
+          visual: (
+            <DeckCardGrid columns="two" items={audienceCards[locale]} tone="dark" />
+          ),
         },
         {
-          ...copy.why,
-          background: "dark",
-          layout: "split",
+          ...why,
+          body: why.body ?? copy.why.body,
+          background: why.background ?? "dark",
+          layout: why.layout ?? "split",
           tone: "dark",
           visual: <DeckCardGrid columns="two" items={valueCards[locale]} tone="dark" />,
         },
         {
-          ...copy.quickPath,
-          background: "theme",
-          layout: "split",
-          primaryCta: {
-            label: isHr ? "Izračunaj potrošnju" : "Calculate consumption",
+          ...quickPath,
+          body: quickPath.body ?? copy.quickPath.body,
+          background: quickPath.background ?? "theme",
+          layout: quickPath.layout ?? "split",
+          primaryCta: quickPath.primaryCta ?? {
+            label: isHr ? "IzraÄunaj potroÅ¡nju" : "Calculate consumption",
             href: routes[locale].calculator,
           },
-          secondaryCta: {
+          secondaryCta: quickPath.secondaryCta ?? {
             label: isHr ? "Kontakt" : "Contact",
             href: routes[locale].contact,
             variant: "secondary",
@@ -85,7 +100,7 @@ export function HomePage({ locale }: HomePageProps) {
           visual: <RouteChoiceGrid locale={locale} />,
         },
       ]}
-      theme="home"
+      theme={deckData?.chapter.theme ?? "home"}
     />
   );
 }

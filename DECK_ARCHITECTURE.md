@@ -20,6 +20,18 @@ English routes mirror the same model under `/en`.
 
 A slide is one full-screen message inside a chapter. Slides are defined as data passed to `DeckPage`, rendered by `DeckSlide`, and controlled by `DeckShell`.
 
+## Supabase Content Model
+
+Supabase mirrors the public deck model:
+
+- `deck_chapters` represent the main navigation chapters.
+- `deck_slides` represent the full-screen slides inside each chapter.
+- `route_path` must match an existing code-owned route before it can affect a public chapter.
+- `slide_key` becomes the `?slide=` URL value.
+- `theme`, `background_variant`, `layout_variant`, and `content_alignment` are validated before they are passed into the deck components.
+
+The public site still has local fallback content in typed modules. If Supabase env variables are missing or a query fails, the deck renders from fallback content and keeps the same no-scroll behavior.
+
 ## Core Components
 
 - `DeckShell`: global public shell with fixed nav, viewport, controls, indicator, mobile nav, keyboard/wheel/touch handling, and URL slide state.
@@ -87,7 +99,8 @@ Not allowed:
 ## Adding Future Pages
 
 1. Add or update the route in `src/content/site.ts`.
-2. Define concise slide copy in `src/content/deck.ts` or a typed content module.
-3. Compose slides with `DeckPage`.
-4. Use an existing deck visual before creating a new one.
-5. Keep each slide to one message, one visual, and one clear next action.
+2. Add concise fallback slide copy in `src/content/deck.ts` or a typed content module.
+3. Add matching `deck_chapters` and `deck_slides` seed data when the content should be editable later.
+4. Compose slides with `DeckPage`.
+5. Use an existing deck visual before creating a new one.
+6. Keep each slide to one message, one visual, and one clear next action.

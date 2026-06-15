@@ -12,34 +12,47 @@ import {
   routes,
   type Locale,
 } from "@/content/site";
+import {
+  resolveDeckSlideContent,
+  type DeckPageData,
+} from "@/lib/data/deck";
 
 type ProductDetailPageProps = {
+  deckData?: DeckPageData;
   locale: Locale;
   product: Product;
 };
 
-export function ProductDetailPage({ locale, product }: ProductDetailPageProps) {
+export function ProductDetailPage({
+  deckData,
+  locale,
+  product,
+}: ProductDetailPageProps) {
   const isHr = locale === "hr";
+  const productIntro = resolveDeckSlideContent(deckData, {
+    id: product.slugs[locale],
+    eyebrow: product.eyebrow[locale],
+    title: product.name[locale],
+    body: product.detail[locale],
+  });
 
   return (
     <DeckPage
       activeKey="products"
-      chapterLabel={chapterLabels[locale].products}
+      chapterLabel={deckData?.chapter.label ?? chapterLabels[locale].products}
       languageHrefs={getLanguageHrefs("products", product.slugs)}
       locale={locale}
       slides={[
         {
-          id: product.slugs[locale],
-          eyebrow: product.eyebrow[locale],
-          title: product.name[locale],
-          body: product.detail[locale],
-          background: "theme",
-          layout: "split",
-          primaryCta: {
-            label: isHr ? "Pošalji upit za proizvod" : "Send product inquiry",
+          ...productIntro,
+          body: productIntro.body ?? product.detail[locale],
+          background: productIntro.background ?? "theme",
+          layout: productIntro.layout ?? "split",
+          primaryCta: productIntro.primaryCta ?? {
+            label: isHr ? "PoÅ¡alji upit za proizvod" : "Send product inquiry",
             href: getWhatsAppHref(locale),
           },
-          secondaryCta: {
+          secondaryCta: productIntro.secondaryCta ?? {
             label: isHr ? "Natrag na proizvode" : "Back to products",
             href: routes[locale].products,
             variant: "secondary",
@@ -55,7 +68,9 @@ export function ProductDetailPage({ locale, product }: ProductDetailPageProps) {
         {
           id: "specifikacije",
           eyebrow: isHr ? "Specifikacije" : "Specifications",
-          title: isHr ? "Najvažnije informacije stanu na jedan ekran." : "The key information fits on one screen.",
+          title: isHr
+            ? "NajvaÅ¾nije informacije stanu na jedan ekran."
+            : "The key information fits on one screen.",
           body: isHr
             ? "Detaljnije cijene i finalne fotografije dodaju se kada se potvrdi asortiman."
             : "Detailed prices and final photography will be added once the assortment is confirmed.",
@@ -80,19 +95,25 @@ export function ProductDetailPage({ locale, product }: ProductDetailPageProps) {
         {
           id: "vizual",
           eyebrow: isHr ? "Vizual proizvoda" : "Product visual",
-          title: isHr ? "Prikaz ostaje informativan, ne webshop katalog." : "The display stays informative, not a webshop catalogue.",
+          title: isHr
+            ? "Prikaz ostaje informativan, ne webshop katalog."
+            : "The display stays informative, not a webshop catalogue.",
           body: product.summary[locale],
           background: "soft",
           layout: "split",
           visual: (
             <ImagePanel
-              alt={isHr ? "Vizual asortimana toaletnog papira" : "Toilet paper assortment visual"}
+              alt={
+                isHr
+                  ? "Vizual asortimana toaletnog papira"
+                  : "Toilet paper assortment visual"
+              }
               src={product.image}
             />
           ),
         },
       ]}
-      theme="products"
+      theme={deckData?.chapter.theme ?? "products"}
     />
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "./Container";
+import { LogoMark } from "./LogoMark";
 import { desktopNav, routes, siteContact, type Locale } from "@/content/site";
 
 type FooterProps = {
@@ -13,13 +14,11 @@ export function Footer({ locale }: FooterProps) {
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div>
             <div className="mb-4 flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-zor-blue text-sm font-black text-white">
-                Z
-              </span>
-              <div>
-                <p className="font-bold text-zor-blue-deep">{siteContact.brand}</p>
-                <p className="text-sm text-zor-muted">{siteContact.company}</p>
-              </div>
+              <LogoMark
+                className="h-14 w-14 rounded-2xl shadow-sm ring-1 ring-inset ring-zor-line"
+                imageClassName="p-1"
+                sizes="3.5rem"
+              />
             </div>
             <p className="max-w-md text-sm leading-6 text-zor-muted">
               {locale === "hr"

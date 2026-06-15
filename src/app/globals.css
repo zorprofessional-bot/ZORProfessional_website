@@ -60,6 +60,15 @@ a {
   border-radius: 999px;
 }
 
+.deck-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.deck-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .slide-reveal {
   animation: zor-slide-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
