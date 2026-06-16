@@ -32,6 +32,10 @@ Supabase mirrors the public deck model:
 
 The public site still has local fallback content in typed modules. If Supabase env variables are missing or a query fails, the deck renders from fallback content and keeps the same no-scroll behavior.
 
+## Admin Editing
+
+The `/admin` panel edits `deck_chapters` and `deck_slides` through Supabase Auth and RLS roles. Admin pages can use normal internal scrolling, tables, and forms, but public chapter routes must continue to render through the deck shell and remain no-scroll.
+
 ## Core Components
 
 - `DeckShell`: global public shell with fixed nav, viewport, controls, indicator, mobile nav, keyboard/wheel/touch handling, and URL slide state.

@@ -31,3 +31,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
 Run the SQL in `supabase/migrations` against the project to create the content tables, RLS policies, storage buckets, and seed data.
+
+## Admin
+
+The admin panel lives at `/admin` and uses Supabase Auth. Create the first user in Supabase Auth, then add a matching row in `profiles` with role `admin`, `editor`, or `viewer`. See `ADMIN_NOTES.md` for the operating guide.

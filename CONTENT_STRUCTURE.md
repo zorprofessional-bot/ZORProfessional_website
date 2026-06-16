@@ -28,10 +28,20 @@ Supabase uses the same public content language:
 
 - `deck_chapters` are main navigation chapters.
 - `deck_slides` are full-screen deck slides inside a chapter.
-- There is no `page_sections` model.
+- The old long-page section model is not part of the public site.
 - Products, blog posts, career positions, leads, applications, settings, and storage assets live in separate Supabase tables.
 
 Local typed content remains the fallback for development and for builds without Supabase env variables.
+
+## Admin Content Workflow
+
+The `/admin` panel manages Supabase content with roles:
+
+- `viewer` can read admin content.
+- `editor` can manage content, leads, products, blog, and career records.
+- `admin` can manage everything, including site settings.
+
+Admin pages may scroll internally and use tables/forms. Public pages remain deck screens.
 
 ## Homepage Slides
 

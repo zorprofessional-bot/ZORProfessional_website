@@ -44,7 +44,9 @@ test("home chapter keeps one tab background and flows to products", async ({ pag
   );
 });
 
-test("first product slide can move back to the last home slide", async ({ page }) => {
+test("first product slide can move back to the last home slide", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name.includes("mobile"), "Keyboard chapter flow is desktop-only.");
+
   await page.goto("/hr/proizvodi?slide=pregled");
 
   await expect(page.locator("#pregled-title")).toBeVisible();

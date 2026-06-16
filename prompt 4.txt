@@ -1,0 +1,380 @@
+Now build a simple admin panel for the ZOR Professional website.
+
+Important:
+The public website is a no-scroll deck-style presentation interface.
+
+Do not create a classic CMS for long scrolling pages.
+Do not bring back the old page_sections model.
+
+The admin must manage:
+
+* deck chapters
+* deck slides
+* products
+* blog posts
+* leads
+* career positions
+* career applications
+* site settings
+
+Follow:
+
+* PROJECT_BRIEF.md
+* DESIGN_SYSTEM.md
+* CONTENT_STRUCTURE.md
+* DECK_ARCHITECTURE.md
+
+The public website concept:
+
+* main navigation items are chapters
+* each chapter contains multiple slides
+* public pages use DeckShell, DeckPage, DeckSlide, DeckControls and SlideIndicator
+* admin pages may use normal scrolling
+* blog article pages may have internal scrollable reader panels
+* public deck pages must remain no-scroll
+
+Admin route:
+
+* /admin
+
+Use Supabase Auth.
+
+Support multiple users with roles:
+
+* admin
+* editor
+* viewer
+
+Role rules:
+
+* viewer can only read admin content
+* editor can manage content, products, blog, leads and career content
+* admin can manage everything, including site settings and user-related admin configuration if implemented
+
+If full user management is too much for now, document how to create users in Supabase manually.
+
+Admin layout:
+
+* simple and practical
+* sidebar on desktop
+* simple top navigation or drawer on mobile
+* clean forms
+* clean tables
+* filters where useful
+* status badges
+* save/cancel buttons
+* no unnecessary charts
+* no enterprise dashboard complexity
+
+Admin sections:
+
+1. Dashboard
+   Show:
+
+* number of new leads
+* number of calculator leads
+* number of career applications
+* published products count
+* published blog posts count
+* quick links to Products, Deck Slides, Leads and Careers
+
+2. Deck Chapters
+   Manage records from deck_chapters.
+
+Allow:
+
+* list chapters
+* filter by locale HR/EN
+* create chapter
+* edit chapter
+* activate/deactivate chapter
+* edit slug
+* edit label
+* edit nav_label
+* edit route_path
+* edit theme
+* edit background_variant
+* edit sort_order
+
+Important:
+Chapters represent main navigation items like:
+
+* Home
+* Proizvodi
+* Proizvodnja
+* Kalkulator
+* Blog
+* Karijere
+* Kontakt
+
+The UI should make this clear.
+
+3. Deck Slides
+   Manage records from deck_slides.
+
+Allow:
+
+* list slides grouped by chapter
+* filter by locale
+* filter by chapter
+* create slide
+* edit slide
+* duplicate slide
+* activate/deactivate slide
+* delete slide only if safe
+* edit slide_key
+* edit eyebrow
+* edit title
+* edit body
+* edit primary_cta_label
+* edit primary_cta_href
+* edit secondary_cta_label
+* edit secondary_cta_href
+* edit visual_type
+* upload/change image through Supabase Storage bucket deck-images
+* edit image_url
+* edit background_variant
+* edit layout_variant
+* edit content_alignment
+* edit sort_order
+
+Important slide editing rules:
+
+* slide body should stay short
+* show a helper note:
+  “Javni web je prezentacija bez skrolanja. Svaki slajd treba imati jednu jasnu poruku i kratak tekst. Za duži tekst koristite blog.”
+* show character guidance:
+  title: recommended under 70 characters
+  body: recommended under 220 characters
+* do not technically block longer text unless easy, but warn visually
+
+Slide preview:
+Create a simple preview area that shows roughly how the slide will look in the public deck.
+It does not need to be perfect, but it should help avoid bad long text.
+
+4. Products
+   Manage records from products.
+
+Allow:
+
+* list products
+* create product
+* edit product
+* publish/draft status
+* delete/archive product
+* edit slug
+* edit HR and EN names
+* edit HR and EN short descriptions
+* edit HR and EN full descriptions
+* edit package_size
+* edit roll_count
+* edit layers
+* edit price_eur
+* edit HR and EN business_note
+* edit HR and EN recommended_for
+* upload/change product image using Supabase Storage bucket product-images
+* edit sort_order
+
+Product admin helper text:
+“Cijena je javna i prikazuje se po paketu. Za firme, apartmane i redovite mjesečne količine koristi se posebna napomena za ponudu.”
+
+5. Blog Posts
+   Manage records from blog_posts.
+
+Allow:
+
+* list posts
+* filter by locale
+* filter by status
+* create post
+* edit post
+* draft/published status
+* edit slug
+* title
+* excerpt
+* content
+* SEO title
+* SEO description
+* cover image upload through blog-images bucket
+* published_at
+
+Important:
+Blog is allowed to contain longer text.
+Blog is where detailed explanations go.
+Public deck slides should link to blog posts when more detail is needed.
+
+Seed or suggest these Croatian blog topics if there are no posts:
+
+* Kako izračunati koliko toaletnog papira treba maloj firmi?
+* Koliko toaletnog papira trebaju apartmani tijekom sezone?
+* Toaletni papir 24 role ili 36 rola: što se više isplati?
+* Zašto je stalna dostupnost važna kod poslovne kupnje papira?
+* Hrvatska proizvodnja toaletnog papira: što kupac dobiva?
+
+6. Leads
+   Manage records from leads.
+
+Allow:
+
+* list leads
+* filter by type:
+
+  * contact
+  * product
+  * calculator
+  * career
+* filter by status:
+
+  * new
+  * contacted
+  * won
+  * lost
+  * archived
+* search by name, company, email or phone
+* open lead detail
+* view message
+* view source_page
+* view source_slide if present
+* view product if product_id exists
+* view calculator_payload if present
+* change status
+* archive lead
+
+Lead detail should be clear and practical.
+If calculator_payload exists, format it in a readable way instead of raw JSON if possible.
+
+7. Career Positions
+   Manage records from career_positions.
+
+Allow:
+
+* list positions
+* create position
+* edit position
+* draft/published/archive status
+* edit HR and EN title
+* edit location
+* edit employment_type
+* edit HR and EN description
+* edit HR and EN requirements
+* edit sort_order
+
+Initial positions:
+
+* Operater na stroju za proizvodnju toaletnog papira
+* Pomoćni radnik u proizvodnji
+* Radnik u pakiranju i pripremi robe
+* Skladišno-proizvodni radnik
+* Otvorena prijava
+
+8. Career Applications
+   Manage records from career_applications.
+
+Allow:
+
+* list applications
+* filter by status:
+
+  * new
+  * reviewed
+  * contacted
+  * rejected
+  * archived
+* filter by position
+* open application detail
+* view name, phone, email
+* view selected position
+* view experience
+* view available_from
+* view message
+* open/download CV if cv_url exists
+* change status
+* archive application
+
+9. Site Settings
+   Manage records from site_settings.
+
+Allow editing:
+
+* brand_name: ZOR Professional
+* company_name: ZOR d.o.o.
+* location: Robni terminali Jankomir
+* whatsapp_number
+* contact_email
+* phone
+* address
+* shop_url: https://shop.zorpro.hr
+* social_links if implemented
+* default_locale
+* analytics IDs if implemented later
+
+Important:
+Use site_settings for WhatsApp number and shop URL in the public website.
+Do not hardcode these values in many places.
+
+Authentication:
+
+* protect all /admin routes
+* unauthenticated users go to /admin/login
+* logged-in users go to /admin
+* show logged-in email
+* provide logout button
+
+Forms:
+
+* use clear validation
+* show success states
+* show error states
+* avoid losing typed content on error
+* use accessible form labels
+
+Uploads:
+Use Supabase Storage:
+
+* deck-images for deck slide images
+* product-images for product images
+* blog-images for blog cover images
+* career-cv for CV files
+
+If upload implementation is too complex in one step:
+
+* implement image_url fields first
+* add clear TODO comments
+* document upload implementation in ADMIN_NOTES.md
+
+Public integration:
+After admin exists, make sure public deck pages can still load active chapters/slides from Supabase.
+If Supabase env variables are missing, public pages should use fallback content and not crash.
+
+Documentation:
+Create or update:
+
+* ADMIN_NOTES.md
+* DECK_ARCHITECTURE.md
+* CONTENT_STRUCTURE.md
+* PROJECT_BRIEF.md
+
+ADMIN_NOTES.md should explain:
+
+* how to log in
+* how to edit chapters
+* how to edit slides
+* how to keep slide text short
+* how to edit products
+* how to review leads
+* how to review career applications
+* how to change WhatsApp number and shop URL
+* how to create first admin user manually in Supabase if needed
+
+Quality checks:
+
+* TypeScript should pass
+* build should pass
+* admin routes protected
+* public deck pages still no-scroll
+* mobile deck navigation still works
+* no page_sections references remain
+* no long public page scroll is reintroduced
+
+Goal:
+Create a simple but useful admin panel that lets ZOR Professional maintain the deck-style website without touching code.

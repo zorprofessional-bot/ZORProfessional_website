@@ -22,6 +22,10 @@ The public `/hr` and `/en` routes use a chapter-and-slide deck model.
 - Public deck pages fit inside `100svh`; normal document scrolling is disabled.
 - Blog article pages may use an internal reader panel for long text.
 
+## Admin Model
+
+The `/admin` route is a practical Supabase Auth-protected admin panel for maintaining deck chapters, deck slides, products, blog posts, leads, career positions, career applications, and site settings. Admin pages may use normal internal scrolling and do not use the public deck shell.
+
 ## Current Chapters
 
 - Home: hero, audience, why ZOR, and quick path.
@@ -34,7 +38,7 @@ The public `/hr` and `/en` routes use a chapter-and-slide deck model.
 
 ## Exclusions
 
-Supabase is now allowed as the optional content and lead backend for chapters, slides, products, blog posts, careers, settings, leads, applications, and storage. Do not add Shopify, checkout, cart flows, a full admin UI, pricing automation, or complex business logic at this stage. Product prices are placeholder package prices until confirmed.
+Supabase is now allowed as the optional content and lead backend for chapters, slides, products, blog posts, careers, settings, leads, applications, admin authentication, and storage. Do not add Shopify, checkout, cart flows, pricing automation, or complex business logic at this stage. Product prices are placeholder package prices until confirmed.
 
 ## Tone
 
