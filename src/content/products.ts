@@ -45,7 +45,7 @@ export const products: Product[] = [
       hr: "ZORPro 24 je jednostavan izbor kada su vazni dostupnost, fer cijena i narudzba bez dugog kataloga.",
       en: "ZORPro 24 is a simple choice when availability, a fair price, and ordering without a long catalogue matter.",
     },
-    image: "/visuals/product-range.png",
+    image: "/visuals/deck/product-zorpro-24.png",
     highlights: {
       hr: ["24 role za redovitu potrosnju", "Dobar omjer cijene i dostupnosti", "Jednostavan WhatsApp upit"],
       en: ["24 rolls for regular use", "Good balance of price and availability", "Simple WhatsApp inquiry"],
@@ -99,7 +99,7 @@ export const products: Product[] = [
       hr: "ZORPro 36 pomaze drzati mirniju zalihu za prostore s vecom mjesecnom potrosnjom.",
       en: "ZORPro 36 helps keep calmer stock for spaces with higher monthly demand.",
     },
-    image: "/visuals/product-range.png",
+    image: "/visuals/deck/product-zorpro-36.png",
     highlights: {
       hr: ["36 rola za vecu zalihu", "Prakticno za redovite kolicine", "Manje prekida u nabavi"],
       en: ["36 rolls for higher stock", "Practical for recurring quantities", "Fewer procurement interruptions"],

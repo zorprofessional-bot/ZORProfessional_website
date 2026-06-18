@@ -2,7 +2,7 @@ import { DeckPage } from "@/components/deck/DeckPage";
 import {
   DeckCardGrid,
   ImagePanel,
-  ProductPackVisual,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import { chapterLabels } from "@/content/deck";
 import type { Product } from "@/content/products";
@@ -58,11 +58,7 @@ export function ProductDetailPage({
             variant: "secondary",
           },
           visual: (
-            <ProductPackVisual
-              count={product.packCount[locale]}
-              label={product.name[locale]}
-              price={product.mockPrice[locale]}
-            />
+            <ImagePanel alt={product.name[locale]} priority src={product.image} />
           ),
         },
         {
@@ -71,26 +67,33 @@ export function ProductDetailPage({
           title: isHr
             ? "NajvaÅ¾nije informacije stanu na jedan ekran."
             : "The key information fits on one screen.",
-          body: isHr
-            ? "Detaljnije cijene i finalne fotografije dodaju se kada se potvrdi asortiman."
-            : "Detailed prices and final photography will be added once the assortment is confirmed.",
-          background: "light",
-          layout: "splitReverse",
-          visual: (
-            <DeckCardGrid
-              columns="three"
-              iconSet="none"
-              items={[
-                ...product.highlights[locale].map((highlight) => ({
-                  title: highlight,
-                })),
-                ...product.specs.map((spec) => ({
-                  meta: spec.label[locale],
-                  title: spec.value[locale],
-                })),
-              ]}
+          body: (
+            <SlideBody
+              body={
+                isHr
+                  ? "Detaljnije cijene i finalne fotografije dodaju se kada se potvrdi asortiman."
+                  : "Detailed prices and final photography will be added once the assortment is confirmed."
+              }
+              support={
+                <DeckCardGrid
+                  columns="three"
+                  iconSet="none"
+                  items={[
+                    ...product.highlights[locale].map((highlight) => ({
+                      title: highlight,
+                    })),
+                    ...product.specs.map((spec) => ({
+                      meta: spec.label[locale],
+                      title: spec.value[locale],
+                    })),
+                  ]}
+                />
+              }
             />
           ),
+          background: "light",
+          layout: "splitReverse",
+          visual: <ImagePanel alt={product.name[locale]} src={product.image} />,
         },
         {
           id: "vizual",

@@ -1,7 +1,7 @@
 import { DeckPage } from "@/components/deck/DeckPage";
 import {
   ImagePanel,
-  WhatsAppPanel,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import {
   CalculatorInputCard,
@@ -48,23 +48,43 @@ export function CalculatorPage({ deckData, locale }: CalculatorPageProps) {
                   : "Toilet paper consumption calculator visual"
               }
               priority
-              src={slides[0]?.imageUrl ?? "/visuals/calculator-preview.png"}
+              src={slides[0]?.imageUrl ?? "/visuals/deck/calculator-intro.png"}
             />
           ),
         },
         {
           ...slides[1],
-          body: slides[1]?.body ?? copy[1].body,
+          body: (
+            <SlideBody
+              body={slides[1]?.body ?? copy[1].body}
+              support={<CalculatorInputCard locale={locale} />}
+            />
+          ),
           background: slides[1]?.background ?? "light",
           layout: slides[1]?.layout ?? "splitReverse",
-          visual: <CalculatorInputCard locale={locale} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Tri podatka za procjenu potrosnje" : "Three inputs for consumption estimate"}
+              src={slides[1]?.imageUrl ?? "/visuals/deck/calculator-input.png"}
+            />
+          ),
         },
         {
           ...slides[2],
-          body: slides[2]?.body ?? copy[2].body,
+          body: (
+            <SlideBody
+              body={slides[2]?.body ?? copy[2].body}
+              support={<CalculatorResultCard locale={locale} />}
+            />
+          ),
           background: slides[2]?.background ?? "soft",
           layout: slides[2]?.layout ?? "split",
-          visual: <CalculatorResultCard locale={locale} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Prakticna preporuka paketa" : "Practical pack recommendation"}
+              src={slides[2]?.imageUrl ?? "/visuals/deck/calculator-result.png"}
+            />
+          ),
         },
         {
           ...slides[3],
@@ -76,7 +96,12 @@ export function CalculatorPage({ deckData, locale }: CalculatorPageProps) {
             href: getWhatsAppHref(locale),
           },
           tone: "dark",
-          visual: <WhatsAppPanel locale={locale} tone="dark" />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Slanje rezultata kroz kratku poruku" : "Sending the result with a short message"}
+              src={slides[3]?.imageUrl ?? "/visuals/deck/calculator-whatsapp.png"}
+            />
+          ),
         },
       ]}
       theme={deckData?.chapter.theme ?? "calculator"}

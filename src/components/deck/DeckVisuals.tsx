@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   BriefcaseBusiness,
   Building2,
@@ -70,16 +71,23 @@ function mutedClass(tone: VisualTone) {
 
 export function ImagePanel({
   alt,
+  className,
   priority = false,
   src,
 }: {
   alt: string;
+  className?: string;
   priority?: boolean;
   src: string;
   tone?: VisualTone;
 }) {
   return (
-    <div className="relative h-[22svh] max-h-48 min-h-40 w-full overflow-hidden rounded-[1.25rem] sm:h-[42svh] sm:max-h-[25rem] lg:h-[64svh]">
+    <div
+      className={cn(
+        "relative h-[22svh] max-h-48 min-h-40 w-full overflow-hidden rounded-[1.25rem] sm:h-[42svh] sm:max-h-[25rem] lg:h-[64svh]",
+        className,
+      )}
+    >
       <Image
         alt={alt}
         className="object-cover"
@@ -88,6 +96,21 @@ export function ImagePanel({
         sizes="(min-width: 1024px) 48vw, 100vw"
         src={src}
       />
+    </div>
+  );
+}
+
+export function SlideBody({
+  body,
+  support,
+}: {
+  body: ReactNode;
+  support?: ReactNode;
+}) {
+  return (
+    <div className="grid gap-5">
+      {typeof body === "string" ? <p>{body}</p> : body}
+      {support ? <div className="min-w-0 text-left">{support}</div> : null}
     </div>
   );
 }

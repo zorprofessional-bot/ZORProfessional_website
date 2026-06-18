@@ -1,7 +1,8 @@
 import { DeckPage } from "@/components/deck/DeckPage";
 import {
   BlogCardsVisual,
-  DeckCardGrid,
+  ImagePanel,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import { blogDeck, chapterLabels } from "@/content/deck";
 import { getPosts, type BlogPost } from "@/content/blog";
@@ -29,8 +30,6 @@ export function BlogIndexPage({
     (post) => post.id === "paper-planning" || post.id === "apartments",
   );
   const guideVisualPosts = guidePosts.length > 0 ? guidePosts : posts.slice(0, 2);
-  const productionPostHref =
-    posts.find((post) => post.id === "local-production")?.href ?? posts[0]?.href;
 
   return (
     <DeckPage
@@ -41,24 +40,39 @@ export function BlogIndexPage({
       slides={[
         {
           ...slides[0],
-          body: slides[0]?.body ?? copy[0].body,
+          body: (
+            <SlideBody
+              body={slides[0]?.body ?? copy[0].body}
+              support={<BlogCardsVisual locale={locale} posts={posts.slice(0, 2)} />}
+            />
+          ),
           background: slides[0]?.background ?? "theme",
           layout: slides[0]?.layout ?? "split",
           primaryCta: slides[0]?.primaryCta ?? {
             label: isHr ? "Pogledaj proizvode" : "View products",
             href: routes[locale].products,
           },
-          visual: <BlogCardsVisual locale={locale} posts={posts.slice(0, 2)} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Kratki vodici prije upita" : "Short guides before inquiry"}
+              src={slides[0]?.imageUrl ?? "/visuals/deck/blog-featured.png"}
+            />
+          ),
         },
         {
           ...slides[1],
-          body: slides[1]?.body ?? copy[1].body,
+          body: (
+            <SlideBody
+              body={slides[1]?.body ?? copy[1].body}
+              support={<BlogCardsVisual locale={locale} posts={guideVisualPosts} />}
+            />
+          ),
           background: slides[1]?.background ?? "editorial",
           layout: slides[1]?.layout ?? "splitReverse",
           visual: (
-            <BlogCardsVisual
-              locale={locale}
-              posts={guideVisualPosts}
+            <ImagePanel
+              alt={isHr ? "Jednostavno planiranje potrosnje" : "Simple consumption planning"}
+              src={slides[1]?.imageUrl ?? "/visuals/deck/blog-guides.png"}
             />
           ),
         },
@@ -68,28 +82,9 @@ export function BlogIndexPage({
           background: slides[2]?.background ?? "light",
           layout: slides[2]?.layout ?? "split",
           visual: (
-            <DeckCardGrid
-              columns="two"
-              iconSet="none"
-              items={[
-                {
-                  meta: isHr ? "Proizvodnja" : "Production",
-                  title: isHr
-                    ? "Lokalna proizvodnja i opskrba"
-                    : "Local production and supply",
-                  body: isHr
-                    ? "Kratko objaÅ¡njenje zaÅ¡to blizina pogona pomaÅ¾e kupcu."
-                    : "A short explanation of why nearby production helps the buyer.",
-                  href: productionPostHref,
-                },
-                {
-                  meta: isHr ? "Kupnja" : "Buying",
-                  title: isHr ? "Kako postaviti bolji upit" : "How to ask a better question",
-                  body: isHr
-                    ? "KoliÄina, prostor i rok su vaÅ¾niji od dugog formulara."
-                    : "Quantity, space, and timing matter more than a long form.",
-                },
-              ]}
+            <ImagePanel
+              alt={isHr ? "Savjeti povezani s opskrbom" : "Advice connected to supply"}
+              src={slides[2]?.imageUrl ?? "/visuals/deck/blog-advice.png"}
             />
           ),
         },

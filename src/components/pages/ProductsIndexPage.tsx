@@ -1,10 +1,5 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  DeckCardGrid,
-  ImagePanel,
-  ProductCardsVisual,
-  ProductPackVisual,
-} from "@/components/deck/DeckVisuals";
+import { ImagePanel } from "@/components/deck/DeckVisuals";
 import { chapterLabels, productsDeck } from "@/content/deck";
 import { getProducts, type Product } from "@/content/products";
 import { getWhatsAppHref, routes, type Locale } from "@/content/site";
@@ -44,11 +39,11 @@ export function ProductsIndexPage({
           background: overview.background ?? "theme",
           layout: overview.layout ?? "split",
           primaryCta: overview.primaryCta ?? {
-            label: isHr ? "PoÅ¡alji upit za cijenu" : "Ask for price",
+            label: isHr ? "Posalji upit za cijenu" : "Ask for price",
             href: getWhatsAppHref(locale),
           },
           secondaryCta: overview.secondaryCta ?? {
-            label: isHr ? "IzraÄunaj potroÅ¡nju" : "Calculate consumption",
+            label: isHr ? "Izracunaj potrosnju" : "Calculate consumption",
             href: routes[locale].calculator,
             variant: "secondary",
           },
@@ -56,7 +51,7 @@ export function ProductsIndexPage({
             <ImagePanel
               alt={isHr ? "ZOR Professional proizvodi" : "ZOR Professional products"}
               priority
-              src={overview.imageUrl ?? "/visuals/product-range.png"}
+              src={overview.imageUrl ?? "/visuals/deck/product-range.png"}
             />
           ),
         },
@@ -82,13 +77,7 @@ export function ProductsIndexPage({
               href: getWhatsAppHref(locale),
               variant: "secondary" as const,
             },
-            visual: (
-              <ProductPackVisual
-                count={product.packCount[locale]}
-                label={product.name[locale]}
-                price={product.mockPrice[locale]}
-              />
-            ),
+            visual: <ImagePanel alt={product.name[locale]} src={product.image} />,
           };
         }),
         {
@@ -97,7 +86,7 @@ export function ProductsIndexPage({
           background: business.background ?? "light",
           layout: business.layout ?? "split",
           primaryCta: business.primaryCta ?? {
-            label: isHr ? "PoÅ¡alji poslovni upit" : "Send business inquiry",
+            label: isHr ? "Posalji poslovni upit" : "Send business inquiry",
             href: getWhatsAppHref(locale),
           },
           secondaryCta: business.secondaryCta ?? {
@@ -106,29 +95,10 @@ export function ProductsIndexPage({
             variant: "secondary",
           },
           visual: (
-            <div className="grid w-full gap-4">
-              <ProductCardsVisual locale={locale} products={products} />
-              <div className="hidden sm:block">
-                <DeckCardGrid
-                  columns="two"
-                  iconSet="none"
-                  items={[
-                    {
-                      title: isHr ? "Firme i ustanove" : "Companies and institutions",
-                      body: isHr
-                        ? "Ponuda se slaÅ¾e prema potroÅ¡nji, lokaciji i ritmu narudÅ¾be."
-                        : "The offer follows demand, location, and ordering rhythm.",
-                    },
-                    {
-                      title: "shop.zorpro.hr",
-                      body: isHr
-                        ? "Web trgovina je planirana kao kasniji kanal."
-                        : "The web shop is planned as a later channel.",
-                    },
-                  ]}
-                />
-              </div>
-            </div>
+            <ImagePanel
+              alt={isHr ? "Poslovne kolicine i upit za ZOR papir" : "Business quantities and ZOR paper inquiry"}
+              src={business.imageUrl ?? "/visuals/deck/products-business.png"}
+            />
           ),
         },
       ]}

@@ -1,8 +1,7 @@
 import { DeckPage } from "@/components/deck/DeckPage";
 import {
-  ContactDetailsVisual,
-  DeckCardGrid,
-  WhatsAppPanel,
+  ImagePanel,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import { ContactFormCard } from "@/components/deck/InteractiveDeckCards";
 import { chapterLabels, contactDeck } from "@/content/deck";
@@ -35,7 +34,7 @@ export function ContactPage({ deckData, locale }: ContactPageProps) {
           background: slides[0]?.background ?? "theme",
           layout: slides[0]?.layout ?? "split",
           primaryCta: slides[0]?.primaryCta ?? {
-            label: isHr ? "PoÅ¡alji WhatsApp upit" : "Send WhatsApp inquiry",
+            label: isHr ? "Posalji WhatsApp upit" : "Send WhatsApp inquiry",
             href: getWhatsAppHref(locale),
           },
           secondaryCta: slides[0]?.secondaryCta ?? {
@@ -44,15 +43,30 @@ export function ContactPage({ deckData, locale }: ContactPageProps) {
             variant: "secondary",
           },
           tone: "dark",
-          visual: <WhatsAppPanel locale={locale} tone="dark" />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Kratka poruka za upit" : "Short inquiry message"}
+              src={slides[0]?.imageUrl ?? "/visuals/deck/contact-whatsapp.png"}
+            />
+          ),
         },
         {
           ...slides[1],
-          body: slides[1]?.body ?? copy[1].body,
+          body: (
+            <SlideBody
+              body={slides[1]?.body ?? copy[1].body}
+              support={<ContactFormCard locale={locale} />}
+            />
+          ),
           background: slides[1]?.background ?? "dark",
           layout: slides[1]?.layout ?? "splitReverse",
           tone: "dark",
-          visual: <ContactFormCard locale={locale} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Email upit s vise konteksta" : "Email inquiry with more context"}
+              src={slides[1]?.imageUrl ?? "/visuals/deck/contact-form.png"}
+            />
+          ),
         },
         {
           ...slides[2],
@@ -61,30 +75,10 @@ export function ContactPage({ deckData, locale }: ContactPageProps) {
           layout: slides[2]?.layout ?? "split",
           tone: "dark",
           visual: (
-            <div className="grid w-full gap-4">
-              <ContactDetailsVisual locale={locale} tone="dark" />
-              <div className="hidden sm:block">
-                <DeckCardGrid
-                  columns="two"
-                  iconSet="none"
-                  items={[
-                    {
-                      title: siteContact.location,
-                      body: `${siteContact.city} Â· ${siteContact.company}`,
-                    },
-                    {
-                      title: isHr
-                        ? "Dostupnost prije obeÄ‡anja"
-                        : "Availability before promises",
-                      body: isHr
-                        ? "Za konkretan rok i koliÄinu prvo provjeravamo zalihu."
-                        : "For a concrete date and quantity, stock is checked first.",
-                    },
-                  ]}
-                  tone="dark"
-                />
-              </div>
-            </div>
+            <ImagePanel
+              alt={isHr ? "Lokacija i dostupnost iz skladista" : "Location and warehouse availability"}
+              src={slides[2]?.imageUrl ?? "/visuals/deck/contact-location.png"}
+            />
           ),
         },
       ]}

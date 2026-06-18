@@ -1,8 +1,5 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  ImagePanel,
-  ProcessStepVisual,
-} from "@/components/deck/DeckVisuals";
+import { ImagePanel } from "@/components/deck/DeckVisuals";
 import { chapterLabels, productionDeck } from "@/content/deck";
 import { getWhatsAppHref, type Locale } from "@/content/site";
 import {
@@ -14,6 +11,15 @@ type ProductionPageProps = {
   deckData?: DeckPageData;
   locale: Locale;
 };
+
+const productionSlideImages = [
+  "/visuals/deck/production-intro.png",
+  "/visuals/deck/production-jumbo-roll.png",
+  "/visuals/deck/production-rewinding.png",
+  "/visuals/deck/production-cutting.png",
+  "/visuals/deck/production-packing.png",
+  "/visuals/deck/production-warehouse.png",
+];
 
 export function ProductionPage({ deckData, locale }: ProductionPageProps) {
   const fallbackSlides = productionDeck[locale];
@@ -41,22 +47,11 @@ export function ProductionPage({ deckData, locale }: ProductionPageProps) {
                 href: getWhatsAppHref(locale),
               }
             : undefined),
-        visual:
-          index === 0 ? (
+        visual: (
             <ImagePanel
-              alt={
-                isHr
-                  ? "Proizvodna linija za toaletni papir"
-                  : "Toilet paper production line"
-              }
-              priority
-              src={slide.imageUrl ?? "/visuals/production-line.png"}
-            />
-          ) : (
-            <ProcessStepVisual
-              step={slide}
-              stepIndex={index - 1}
-              totalSteps={slides.length - 1}
+              alt={slide.title}
+              priority={index === 0}
+              src={slide.imageUrl ?? productionSlideImages[index] ?? productionSlideImages[0]}
             />
           ),
       }))}

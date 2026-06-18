@@ -2,6 +2,8 @@ import { DeckPage } from "@/components/deck/DeckPage";
 import {
   ArticleReader,
   BlogCardsVisual,
+  ImagePanel,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import type { BlogPost } from "@/content/blog";
 import { getPosts } from "@/content/blog";
@@ -44,43 +46,73 @@ export function BlogDetailPage({
           title: post.title[locale],
           body: post.excerpt[locale],
           background: "theme",
-          layout: "center",
+          layout: "split",
           primaryCta: {
-            label: isHr ? "Svi Älanci" : "All articles",
+            label: isHr ? "Svi clanci" : "All articles",
             href: routes[locale].blog,
             variant: "secondary",
           },
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Prakticni vodic prije upita" : "Practical guide before inquiry"}
+              src="/visuals/deck/blog-featured.png"
+            />
+          ),
         },
         {
           id: "reader",
-          eyebrow: isHr ? "ÄŒlanak" : "Article",
+          eyebrow: isHr ? "Clanak" : "Article",
           title: isHr
             ? "Reader panel se skrola, deck shell ostaje stabilan."
             : "The reader panel scrolls, the deck shell stays stable.",
-          body: isHr
-            ? "Ovo je jedina dopuÅ¡tena scroll iznimka na javnim prezentacijskim stranicama."
-            : "This is the allowed scroll exception on public presentation pages.",
+          body: (
+            <SlideBody
+              body={
+                isHr
+                  ? "Ovo je jedina dopustena scroll iznimka na javnim prezentacijskim stranicama."
+                  : "This is the allowed scroll exception on public presentation pages."
+              }
+              support={
+                <ArticleReader
+                  body={post.body[locale]}
+                  date={post.date}
+                  locale={locale}
+                  postTitle={post.title[locale]}
+                />
+              }
+            />
+          ),
           background: "editorial",
           layout: "splitReverse",
           visual: (
-            <ArticleReader
-              body={post.body[locale]}
-              date={post.date}
-              locale={locale}
-              postTitle={post.title[locale]}
+            <ImagePanel
+              alt={isHr ? "Jednostavno citanje prakticnog vodica" : "Simple practical guide reading"}
+              src="/visuals/deck/blog-guides.png"
             />
           ),
         },
         {
           id: "povezano",
           eyebrow: isHr ? "Povezano" : "Related",
-          title: isHr ? "Nastavite kroz kratke vodiÄe." : "Continue through short guides.",
-          body: isHr
-            ? "Svaki tekst treba pomoÄ‡i kupcu postaviti bolji sljedeÄ‡i upit."
-            : "Each post should help a buyer ask a better next question.",
+          title: isHr ? "Nastavite kroz kratke vodice." : "Continue through short guides.",
+          body: (
+            <SlideBody
+              body={
+                isHr
+                  ? "Svaki tekst treba pomoci kupcu postaviti bolji sljedeci upit."
+                  : "Each post should help a buyer ask a better next question."
+              }
+              support={<BlogCardsVisual locale={locale} posts={related} />}
+            />
+          ),
           background: "light",
           layout: "split",
-          visual: <BlogCardsVisual locale={locale} posts={related} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Povezani vodici za opskrbu" : "Related supply guides"}
+              src="/visuals/deck/blog-advice.png"
+            />
+          ),
         },
       ]}
       theme={deckData?.chapter.theme ?? "blog"}

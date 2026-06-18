@@ -1,14 +1,12 @@
 import { DeckPage } from "@/components/deck/DeckPage";
 import {
-  DeckCardGrid,
   ImagePanel,
   RouteChoiceGrid,
+  SlideBody,
 } from "@/components/deck/DeckVisuals";
 import {
-  audienceCards,
   chapterLabels,
   homeDeck,
-  valueCards,
 } from "@/content/deck";
 import { getWhatsAppHref, routes, type Locale } from "@/content/site";
 import {
@@ -59,7 +57,7 @@ export function HomePage({ deckData, locale }: HomePageProps) {
                   : "ZOR Professional toilet paper"
               }
               priority
-              src={hero.imageUrl ?? "/visuals/hero-paper.png"}
+              src={hero.imageUrl ?? "/visuals/deck/home-hero.png"}
               tone="dark"
             />
           ),
@@ -71,7 +69,14 @@ export function HomePage({ deckData, locale }: HomePageProps) {
           layout: audience.layout ?? "splitReverse",
           tone: "light",
           visual: (
-            <DeckCardGrid columns="two" items={audienceCards[locale]} tone="dark" />
+            <ImagePanel
+              alt={
+                isHr
+                  ? "Prostori koji svakodnevno koriste toaletni papir"
+                  : "Spaces that use toilet paper every day"
+              }
+              src={audience.imageUrl ?? "/visuals/deck/home-audience.png"}
+            />
           ),
         },
         {
@@ -80,11 +85,18 @@ export function HomePage({ deckData, locale }: HomePageProps) {
           background: why.background ?? "dark",
           layout: why.layout ?? "split",
           tone: "dark",
-          visual: <DeckCardGrid columns="two" items={valueCards[locale]} tone="dark" />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Proizvodnja i dostupnost ZOR papira" : "ZOR paper production and availability"}
+              src={why.imageUrl ?? "/visuals/deck/home-why-zor.png"}
+            />
+          ),
         },
         {
           ...quickPath,
-          body: quickPath.body ?? copy.quickPath.body,
+          body: (
+            <SlideBody body={quickPath.body ?? copy.quickPath.body} support={<RouteChoiceGrid locale={locale} />} />
+          ),
           background: quickPath.background ?? "theme",
           layout: quickPath.layout ?? "split",
           primaryCta: quickPath.primaryCta ?? {
@@ -97,7 +109,12 @@ export function HomePage({ deckData, locale }: HomePageProps) {
             variant: "secondary",
           },
           tone: "dark",
-          visual: <RouteChoiceGrid locale={locale} />,
+          visual: (
+            <ImagePanel
+              alt={isHr ? "Brzi odabir sljedeceg koraka" : "Fast next-step choice"}
+              src={quickPath.imageUrl ?? "/visuals/deck/home-quick-path.png"}
+            />
+          ),
         },
       ]}
       theme={deckData?.chapter.theme ?? "home"}
