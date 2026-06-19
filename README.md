@@ -51,6 +51,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyxxxxx
 
 Never put the service-role key in the frontend — only the public anon key.
 
+For correct canonical URLs, sitemap, and robots in production, set the public site URL (defaults to `https://zorpro.hr`):
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.example
+```
+
 ### NPM scripts
 
 | Script | What it does |
@@ -128,7 +134,7 @@ E2E runs against `next dev` in fallback mode (no Supabase), covering deck naviga
 
 Deploy on Vercel (or any Next.js host):
 
-1. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the host's environment.
+1. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `NEXT_PUBLIC_SITE_URL` in the host's environment.
 2. Build command `next build`, output is the standard Next.js app.
 3. Public deck pages are statically prerendered; after changing content/settings in Supabase, redeploy or revalidate to refresh the prerendered pages. `/admin` is always dynamic.
 

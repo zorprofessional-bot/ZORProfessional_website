@@ -71,7 +71,7 @@ Cilj: dokazati da postojeći deck + Supabase wiring + admin + fallback drže vod
 - **Faza 2 — Upload slika** ✅ NAPRAVLJENO (vidi dolje).
 - **Faza 3 — site_settings → public** ✅ NAPRAVLJENO (vidi dolje).
 - **Faza 4 — CV upload** (`career-cv`, private + signed URL).
-- **Faza 5 — Production readiness**: SEO metadata/sitemap/robots, performance, env na hostingu, deploy provjera.
+- **Faza 5 — Production readiness**: SEO osnove (sitemap/robots/metadataBase) ✅ NAPRAVLJENO (vidi dolje); ostaje performance audit + deploy provjera.
 - **Faza 6 — User management UI** (opcionalno).
 
 Redoslijed po vrijednosti 2→3→5→4→6.
@@ -154,3 +154,16 @@ Dovršen Prompt 4 zahtjev: "Use site_settings for WhatsApp number and shop URL..
 **Verifikacija:** `npm run build` exit 0 (svih 30 ruta i dalje prerenderano), `npm run lint` exit 0, `npm run test:e2e` 19 prošlo / 1 skip / exit 0. Promjena vrijednosti u bazi vidljiva tek po spajanju Supabasea (connect-later checklista).
 
 **Ostaje:** Faza 4 (CV upload), Faza 5 (production readiness/SEO), Faza 6 (user management UI).
+
+---
+
+## Status Faze 5 — SEO osnove (NAPRAVLJENO 2026-06-19)
+
+- [src/app/sitemap.ts](src/app/sitemap.ts): generira sitemap za sve javne rute (HR/EN poglavlja + product detail + blog detail; dinamiku čita iz `getPublishedProducts`/`getPublishedPosts`, radi i u fallbacku).
+- [src/app/robots.ts](src/app/robots.ts): allow `/`, disallow `/admin` i `/api`, link na sitemap.
+- `metadataBase` postavljen u [src/app/layout.tsx](src/app/layout.tsx) (kanonički/OG URL-ovi).
+- `siteUrl` u [src/content/site.ts](src/content/site.ts): env-driven (`NEXT_PUBLIC_SITE_URL`), fallback `https://zorpro.hr` — **postavi pravu domenu na hostingu**.
+
+**Verifikacija:** `npm run build` exit 0 (rute `/sitemap.xml` i `/robots.txt` generirane), `npm run lint` exit 0, `npm run test:e2e` 18 prošlo/1 skip/exit 0.
+
+**Ostaje u Fazi 5:** performance audit (Lighthouse/slike), provjera deploya na hostingu (env + redeploy). **Ostale faze:** Faza 4 (CV upload), Faza 6 (user management UI).

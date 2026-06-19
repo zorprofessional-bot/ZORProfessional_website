@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
+import { siteUrl } from "@/content/site";
 import { getSiteContact } from "@/lib/data/settings";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "ZOR Professional",
     template: "%s | ZOR Professional",

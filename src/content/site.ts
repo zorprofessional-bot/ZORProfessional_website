@@ -13,6 +13,12 @@ export type MobileRouteKey = RouteKey;
 
 export const locales: Locale[] = ["hr", "en"];
 
+// Public base URL for canonical links, sitemap, and robots.
+// Override per environment with NEXT_PUBLIC_SITE_URL (trailing slash optional).
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://zorpro.hr"
+).replace(/\/+$/, "");
+
 export const menuRouteOrder: RouteKey[] = [
   "home",
   "products",
