@@ -8,7 +8,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import { useRouter } from "next/navigation";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -25,7 +24,6 @@ import {
   getChapterTheme,
   type ChapterThemeId,
 } from "./ChapterThemeProvider";
-import { DeckControls } from "./DeckControls";
 import { SlideIndicator } from "./SlideIndicator";
 import type { DeckSlideMeta } from "./types";
 
@@ -53,10 +51,6 @@ type DeckTransition = {
 
 const slideParamName = "slide";
 const deckTransitionDurationMs = 480;
-
-const subscribeToHydration = () => () => {};
-const getHydratedSnapshot = () => true;
-const getServerHydratedSnapshot = () => false;
 
 function isTypingTarget(target: EventTarget | null) {
   if (!(target instanceof HTMLElement)) {
@@ -94,11 +88,6 @@ export function DeckShell({
   const themeConfig = getChapterTheme(theme);
   const [activeIndex, setActiveIndex] = useState(0);
   const [transition, setTransition] = useState<DeckTransition | null>(null);
-  const controlsReady = useSyncExternalStore(
-    subscribeToHydration,
-    getHydratedSnapshot,
-    getServerHydratedSnapshot,
-  );
   const activeIndexRef = useRef(activeIndex);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const transitionToken = useRef(0);
@@ -110,9 +99,6 @@ export function DeckShell({
   const previousChapterHref = menuFlow
     ? getAdjacentMenuChapterHref(locale, activeKey, "previous")
     : undefined;
-  const canGoNext = activeIndex < slides.length - 1 || Boolean(nextChapterHref);
-  const canGoPrevious = activeIndex > 0 || Boolean(previousChapterHref);
-
   useEffect(() => {
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
@@ -374,7 +360,7 @@ export function DeckShell({
       />
       <main
         aria-label={chapterLabel}
-        className="relative h-[100svh] overflow-hidden pb-[5.35rem] pt-[4.5rem] md:pb-0 md:pt-20 lg:pt-[7.75rem]"
+        className="relative h-[100svh] overflow-hidden pb-[5.35rem] pt-[4.5rem] md:pb-[3rem] md:pt-20 lg:pb-[4.25rem] lg:pt-[7.75rem]"
         onTouchEnd={handleTouchEnd}
         onTouchStart={handleTouchStart}
         onWheel={handleWheel}
@@ -418,14 +404,6 @@ export function DeckShell({
         labels={{ goTo: labels.goTo, progress: labels.progress }}
         onSelect={(index) => goTo(index)}
         slides={slides}
-        tone={themeConfig.navTone}
-      />
-      <DeckControls
-        canGoNext={controlsReady ? canGoNext : true}
-        canGoPrevious={controlsReady ? canGoPrevious : true}
-        labels={{ next: labels.next, previous: labels.previous }}
-        onNext={goNext}
-        onPrevious={goPrevious}
         tone={themeConfig.navTone}
       />
       <MobileBottomNav activeKey={activeKey} locale={locale} tone={themeConfig.mobileTone} />
