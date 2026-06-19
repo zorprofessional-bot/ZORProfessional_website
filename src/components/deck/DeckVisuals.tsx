@@ -12,7 +12,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  Newspaper,
   Package,
   Scissors,
   Truck,
@@ -21,6 +20,7 @@ import {
 } from "lucide-react";
 import { ButtonLink } from "@/components/ButtonLink";
 import { LogoMark } from "@/components/LogoMark";
+import { renderHighlights } from "./RichText";
 import type { BlogPost } from "@/content/blog";
 import type { Product } from "@/content/products";
 import {
@@ -100,18 +100,77 @@ export function ImagePanel({
   );
 }
 
+export type PointItem = {
+  title: string;
+  body?: string;
+};
+
+export function SlideLead({ text }: { text: string }) {
+  return <p className="deck-slide-lead">{renderHighlights(text)}</p>;
+}
+
+export function SlidePoints({
+  items,
+  variant = "list",
+}: {
+  items: PointItem[];
+  variant?: "list" | "numbered";
+}) {
+  return (
+    <ul className="deck-points">
+      {items.map((item, index) => (
+        <li
+          className={cn("deck-point", variant === "numbered" && "deck-point--numbered")}
+          key={item.title}
+        >
+          {variant === "numbered" ? (
+            <span aria-hidden className="deck-point-index">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          ) : null}
+          <div className="min-w-0">
+            <p
+              className={cn(
+                "deck-point-title",
+                variant === "list" && "deck-point-title--accent",
+              )}
+            >
+              {renderHighlights(item.title)}
+            </p>
+            {item.body ? (
+              <p className="deck-point-body">{renderHighlights(item.body)}</p>
+            ) : null}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function SlideBody({
   body,
+  lead,
+  points,
+  pointsVariant = "list",
   support,
 }: {
-  body: ReactNode;
+  body?: ReactNode;
+  lead?: string;
+  points?: PointItem[];
+  pointsVariant?: "list" | "numbered";
   support?: ReactNode;
 }) {
   return (
-    <div className="grid gap-5">
-      {typeof body === "string" ? <p>{body}</p> : body}
-      {support ? <div className="min-w-0 text-left">{support}</div> : null}
-    </div>
+    <>
+      {lead ? <SlideLead text={lead} /> : null}
+      {typeof body === "string" ? <SlideLead text={body} /> : body}
+      {points && points.length > 0 ? (
+        <SlidePoints items={points} variant={pointsVariant} />
+      ) : null}
+      {support ? (
+        <div className="mt-[clamp(0.55rem,0.3rem+1.4vh,1.25rem)] min-w-0 text-left">{support}</div>
+      ) : null}
+    </>
   );
 }
 
@@ -396,24 +455,25 @@ export function RouteChoiceGrid({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="grid w-full gap-3 sm:grid-cols-2">
+    <div className="mt-[clamp(0.85rem,0.45rem+1.5vh,1.5rem)] grid w-full gap-x-10 sm:grid-cols-2">
       {items.map((item) => {
         const Icon = item.icon;
 
         return (
           <Link
-            className="group flex items-center justify-between gap-3 rounded-[1.25rem] border border-white/18 bg-white/10 p-3 text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15 sm:justify-center sm:gap-4 sm:p-5"
+            className="group flex items-center justify-between gap-4 border-t border-white/14 py-[clamp(0.55rem,0.35rem+0.7vh,0.85rem)] text-white transition hover:text-[var(--deck-accent)]"
             href={item.href}
             key={item.href}
           >
-            <span className="flex items-center gap-3 sm:gap-4">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-zor-blue sm:h-11 sm:w-11">
-                <Icon aria-hidden size={21} />
-              </span>
+            <span className="flex items-center gap-3">
+              <Icon aria-hidden className="text-[var(--deck-accent)]" size={20} strokeWidth={2.1} />
               <span className="text-base font-semibold sm:text-lg">{item.label}</span>
             </span>
-            <span aria-hidden className="text-xl transition group-hover:translate-x-0.5 sm:hidden">
-              &gt;
+            <span
+              aria-hidden
+              className="text-lg opacity-40 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+            >
+              →
             </span>
           </Link>
         );
@@ -481,33 +541,33 @@ export function ContactDetailsVisual({ locale, tone = "dark" }: { locale: Locale
 export function BlogCardsVisual({
   locale,
   posts,
-  tone = "dark",
 }: {
   locale: Locale;
   posts: Array<BlogPost & { href: string }>;
-  tone?: VisualTone;
 }) {
   return (
-    <div className="grid w-full gap-3">
+    <div className="mt-[clamp(0.85rem,0.45rem+1.5vh,1.5rem)] grid w-full">
       {posts.map((post) => (
         <Link
-          className={cn("rounded-[1.25rem] p-3 transition hover:-translate-y-0.5 sm:p-5 sm:text-center", panelClasses(tone))}
+          className="group flex items-start justify-between gap-4 border-t border-white/14 py-[clamp(0.5rem,0.3rem+0.8vh,0.85rem)] text-white transition hover:text-[var(--deck-accent)]"
           href={post.href}
           key={post.id}
         >
-          <div className="mb-3 flex items-center justify-between gap-3 sm:justify-center">
-            <p
-              className={cn(
-                "text-xs font-bold uppercase tracking-[0.18em]",
-                tone === "dark" ? "text-white/62" : "text-zor-blue",
-              )}
-            >
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--deck-accent)] sm:text-xs">
               {post.eyebrow[locale]}
             </p>
-            <Newspaper aria-hidden className={cn("sm:hidden", tone === "dark" ? "text-white/54" : "text-zor-blue")} size={18} />
+            <h3 className="mt-1 text-base font-semibold leading-snug sm:text-lg">{post.title[locale]}</h3>
+            <p className="mt-1 hidden text-sm leading-6 text-[var(--deck-muted)] sm:block">
+              {post.excerpt[locale]}
+            </p>
           </div>
-          <h3 className="text-base font-semibold leading-snug sm:text-xl">{post.title[locale]}</h3>
-          <p className={cn("mt-2 hidden text-sm leading-6 sm:block", mutedClass(tone))}>{post.excerpt[locale]}</p>
+          <span
+            aria-hidden
+            className="mt-1 text-lg opacity-40 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+          >
+            →
+          </span>
         </Link>
       ))}
     </div>

@@ -40,7 +40,19 @@ type DeckShellProps = {
   theme: ChapterThemeId;
 };
 
+type DeckTransitionAxis = "horizontal" | "vertical";
+type DeckTransitionDirection = "next" | "previous";
+
+type DeckTransition = {
+  axis: DeckTransitionAxis;
+  direction: DeckTransitionDirection;
+  fromIndex: number;
+  toIndex: number;
+  token: number;
+};
+
 const slideParamName = "slide";
+const deckTransitionDurationMs = 480;
 
 const subscribeToHydration = () => () => {};
 const getHydratedSnapshot = () => true;
@@ -56,6 +68,18 @@ function isTypingTarget(target: EventTarget | null) {
   );
 }
 
+function getDeckTransitionMeta(fromIndex: number, toIndex: number) {
+  if (fromIndex === toIndex) {
+    return null;
+  }
+
+  const direction: DeckTransitionDirection = toIndex > fromIndex ? "next" : "previous";
+  const boundaryIndex = Math.max(0, direction === "next" ? fromIndex : fromIndex - 1);
+  const axis: DeckTransitionAxis = boundaryIndex % 2 === 0 ? "horizontal" : "vertical";
+
+  return { axis, direction };
+}
+
 export function DeckShell({
   activeKey,
   chapterLabel,
@@ -69,12 +93,15 @@ export function DeckShell({
   const router = useRouter();
   const themeConfig = getChapterTheme(theme);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [transition, setTransition] = useState<DeckTransition | null>(null);
   const controlsReady = useSyncExternalStore(
     subscribeToHydration,
     getHydratedSnapshot,
     getServerHydratedSnapshot,
   );
+  const activeIndexRef = useRef(activeIndex);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const transitionToken = useRef(0);
   const wheelLockUntil = useRef(0);
   const slideNodes = useMemo(() => Children.toArray(children), [children]);
   const nextChapterHref = menuFlow
@@ -85,6 +112,22 @@ export function DeckShell({
     : undefined;
   const canGoNext = activeIndex < slides.length - 1 || Boolean(nextChapterHref);
   const canGoPrevious = activeIndex > 0 || Boolean(previousChapterHref);
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    if (!transition) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setTransition((current) => (current?.token === transition.token ? null : current));
+    }, deckTransitionDurationMs);
+
+    return () => window.clearTimeout(timeout);
+  }, [transition]);
 
   const indexFromLocation = useCallback(() => {
     if (typeof window === "undefined") {
@@ -123,45 +166,94 @@ export function DeckShell({
 
   const goTo = useCallback(
     (index: number, mode: "push" | "replace" = "push") => {
+      if (slides.length === 0) {
+        return;
+      }
+
       const nextIndex = Math.max(0, Math.min(slides.length - 1, index));
+      const previousIndex = activeIndexRef.current;
+
+      if (nextIndex === previousIndex) {
+        writeSlideToUrl(nextIndex, mode);
+        return;
+      }
+
+      const meta = getDeckTransitionMeta(previousIndex, nextIndex);
+      transitionToken.current += 1;
+      activeIndexRef.current = nextIndex;
       setActiveIndex(nextIndex);
+      setTransition(
+        meta
+          ? {
+              ...meta,
+              fromIndex: previousIndex,
+              toIndex: nextIndex,
+              token: transitionToken.current,
+            }
+          : null,
+      );
       writeSlideToUrl(nextIndex, mode);
     },
     [slides.length, writeSlideToUrl],
   );
 
   const goNext = useCallback(() => {
-    if (activeIndex < slides.length - 1) {
-      goTo(activeIndex + 1);
+    const currentIndex = activeIndexRef.current;
+
+    if (currentIndex < slides.length - 1) {
+      goTo(currentIndex + 1);
       return;
     }
 
     if (nextChapterHref) {
       router.push(nextChapterHref);
     }
-  }, [activeIndex, goTo, nextChapterHref, router, slides.length]);
+  }, [goTo, nextChapterHref, router, slides.length]);
 
   const goPrevious = useCallback(() => {
-    if (activeIndex > 0) {
-      goTo(activeIndex - 1);
+    const currentIndex = activeIndexRef.current;
+
+    if (currentIndex > 0) {
+      goTo(currentIndex - 1);
       return;
     }
 
     if (previousChapterHref) {
       router.push(previousChapterHref);
     }
-  }, [activeIndex, goTo, previousChapterHref, router]);
+  }, [goTo, previousChapterHref, router]);
 
   useEffect(() => {
-    const syncFromUrl = () => {
-      setActiveIndex(indexFromLocation());
-    };
-    const frame = window.requestAnimationFrame(syncFromUrl);
+    const syncFromUrl = (animate: boolean) => {
+      const nextIndex = indexFromLocation();
+      const previousIndex = activeIndexRef.current;
 
-    window.addEventListener("popstate", syncFromUrl);
+      if (nextIndex === previousIndex) {
+        return;
+      }
+
+      const meta = animate ? getDeckTransitionMeta(previousIndex, nextIndex) : null;
+      transitionToken.current += 1;
+      activeIndexRef.current = nextIndex;
+      setActiveIndex(nextIndex);
+      setTransition(
+        meta
+          ? {
+              ...meta,
+              fromIndex: previousIndex,
+              toIndex: nextIndex,
+              token: transitionToken.current,
+            }
+          : null,
+      );
+    };
+    const handlePopState = () => syncFromUrl(true);
+    const frame = window.requestAnimationFrame(() => syncFromUrl(false));
+
+    window.addEventListener("popstate", handlePopState);
     return () => {
       window.cancelAnimationFrame(frame);
-      window.removeEventListener("popstate", syncFromUrl);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [indexFromLocation]);
 
@@ -229,13 +321,24 @@ export function DeckShell({
     const touch = event.changedTouches[0];
     const deltaX = touch.clientX - touchStart.current.x;
     const deltaY = touch.clientY - touchStart.current.y;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
     touchStart.current = null;
 
-    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) {
+    if (Math.max(absX, absY) < 48) {
       return;
     }
 
-    if (deltaX < 0) {
+    if (absX >= absY) {
+      if (deltaX < 0) {
+        goNext();
+      } else {
+        goPrevious();
+      }
+      return;
+    }
+
+    if (deltaY < 0) {
       goNext();
     } else {
       goPrevious();
@@ -279,13 +382,28 @@ export function DeckShell({
         <div className="relative h-full overflow-hidden">
           {slideNodes.map((child, index) => {
             const active = index === activeIndex;
+            const transitioningIn = transition?.toIndex === index;
+            const transitioningOut = transition?.fromIndex === index;
+            const transitioning = transitioningIn || transitioningOut;
+            const visible = active || transitioningOut;
+            const transitionClass = transitioning
+              ? transitioningIn
+                ? `deck-slide-enter-${transition.axis}-${transition.direction}`
+                : `deck-slide-exit-${transition.axis}-${transition.direction}`
+              : undefined;
 
             return (
               <div
                 aria-hidden={!active}
                 className={cn(
-                  "deck-scroll absolute inset-0 h-full w-full overflow-y-auto overscroll-contain transition-opacity duration-200 ease-out md:overflow-hidden",
-                  active ? "visible opacity-100" : "invisible opacity-0",
+                  "deck-slide-frame deck-scroll absolute inset-0 h-full w-full overflow-y-auto overscroll-contain transition-opacity duration-200 ease-out md:overflow-hidden",
+                  visible
+                    ? "visible opacity-100"
+                    : "invisible pointer-events-none opacity-0",
+                  active ? "pointer-events-auto" : "pointer-events-none",
+                  transitioningIn && "z-20",
+                  transitioningOut && "z-10",
+                  transitionClass,
                 )}
                 key={slides[index]?.id ?? index}
               >

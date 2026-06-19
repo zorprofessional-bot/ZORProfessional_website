@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
+import { getSiteContact } from "@/lib/data/settings";
 
 export const metadata: Metadata = {
   title: {
@@ -14,14 +16,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const contact = await getSiteContact();
+
   return (
     <html lang="hr">
-      <body>{children}</body>
+      <body>
+        <SiteSettingsProvider value={contact}>{children}</SiteSettingsProvider>
+      </body>
     </html>
   );
 }

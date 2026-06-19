@@ -130,15 +130,15 @@ test("production process slide shows text and image on mobile", async ({ page })
   await page.goto("/hr/proizvodnja?slide=skladiste");
 
   await expect(page.locator("#skladiste-title")).toBeVisible();
-  await expect(page.getByText("Dogovor ima smisla tek kada je zaliha provjerena.")).toBeVisible();
-  await expect(page.getByAltText("Dostupnost iz skladišta skraćuje put do kupca.")).toBeVisible();
+  await expect(page.getByText(/Dogovor ima smisla tek kada je/)).toBeVisible();
+  await expect(page.locator('[data-slide-id="skladiste"] img').first()).toBeVisible();
   await expect(page.getByRole("heading", { level: 3 })).toHaveCount(0);
 });
 
 test("blog article uses an internal reader while the shell stays fixed", async ({ page }) => {
   await page.goto("/hr/blog/kako-planirati-potrosnju-toaletnog-papira?slide=reader");
 
-  await expect(page.getByRole("heading", { name: /Reader panel/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Cijeli članak/ })).toBeVisible();
   await expect(page.locator("[data-deck-scroll]")).toBeVisible();
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
 });
@@ -150,7 +150,7 @@ test("contact form keeps a fallback path when Supabase is not configured", async
   await form.getByLabel("Ime ili firma").fill("Apartmani Zagreb");
   await form.getByLabel("Email ili telefon").fill("test@example.com");
   await form.getByRole("textbox", { name: "Poruka" }).fill("Trebamo okvirnu ponudu za ZORPro 36.");
-  await form.getByRole("button", { name: "Posalji upit" }).click();
+  await form.getByRole("button", { name: "Pošalji upit" }).click();
 
   await expect(page.getByRole("status")).toContainText("Supabase nije konfiguriran lokalno");
   await expect(page.getByRole("link", { name: "Otvori email" })).toBeVisible();

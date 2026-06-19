@@ -1,17 +1,14 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  DeckCardGrid,
-  ImagePanel,
-  SlideBody,
-} from "@/components/deck/DeckVisuals";
+import { ImagePanel, SlideBody } from "@/components/deck/DeckVisuals";
 import { CareerApplicationCard } from "@/components/deck/InteractiveDeckCards";
 import { careersDeck, chapterLabels } from "@/content/deck";
-import { getWhatsAppHref, type Locale } from "@/content/site";
+import { buildWhatsAppHref, type Locale } from "@/content/site";
 import type { CareerPosition } from "@/lib/data/careers";
 import {
   resolveDeckSlideContent,
   type DeckPageData,
 } from "@/lib/data/deck";
+import { getSiteContact } from "@/lib/data/settings";
 
 type CareersPageProps = {
   deckData?: DeckPageData;
@@ -19,31 +16,33 @@ type CareersPageProps = {
   positions?: CareerPosition[];
 };
 
-export function CareersPage({ deckData, locale, positions = [] }: CareersPageProps) {
+export async function CareersPage({ deckData, locale, positions = [] }: CareersPageProps) {
   const copy = careersDeck[locale];
   const isHr = locale === "hr";
-  const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
-  const positionCards =
+  const contact = await getSiteContact();
+  const intro = resolveDeckSlideContent(deckData, copy[0]);
+  const roles = resolveDeckSlideContent(deckData, copy[1], ["operater", "operator"]);
+  const openings = resolveDeckSlideContent(deckData, copy[3], ["pozicije", "positions"]);
+  const application = resolveDeckSlideContent(deckData, copy[4], ["prijava", "application"]);
+
+  const positionPoints =
     positions.length > 0
       ? positions.slice(0, 4).map((position) => ({
-          meta: position.employmentType,
           title: position.title,
-          body: position.location,
+          body: `${position.employmentType} · ${position.location}`,
         }))
       : [
           {
-            meta: isHr ? "Uskoro" : "Soon",
             title: isHr ? "Operater na stroju" : "Machine operator",
             body: isHr
-              ? "Detalji smjene, uvjeta i prijave dolaze u sljedecoj fazi."
-              : "Shift, terms, and application details come in the next phase.",
+              ? "**Robni terminali Jankomir** — detalji smjene uskoro."
+              : "**Robni terminali Jankomir** — shift details soon.",
           },
           {
-            meta: isHr ? "Lokacija" : "Location",
-            title: "Robni terminali Jankomir",
+            title: isHr ? "Otvorena prijava" : "Open application",
             body: isHr
-              ? "Rad u Zagrebu, vezan uz proizvodnju i skladiste."
-              : "Work in Zagreb, tied to production and warehouse stock.",
+              ? "Javi se i **prije** službenog oglasa."
+              : "Reach out **before** a formal opening.",
           },
         ];
 
@@ -55,86 +54,96 @@ export function CareersPage({ deckData, locale, positions = [] }: CareersPagePro
       menuFlow
       slides={[
         {
-          ...slides[0],
-          body: slides[0]?.body ?? copy[0].body,
-          background: slides[0]?.background ?? "theme",
-          layout: slides[0]?.layout ?? "split",
-          primaryCta: slides[0]?.primaryCta ?? {
-            label: isHr ? "Posalji upit za posao" : "Send job inquiry",
-            href: getWhatsAppHref(locale),
+          ...intro,
+          body: intro.body ?? copy[0].body,
+          primaryCta: {
+            label: isHr ? "Pošalji upit za posao" : "Send job inquiry",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Radno okruzenje u proizvodnji" : "Production work environment"}
-              priority
-              src={slides[0]?.imageUrl ?? "/visuals/deck/careers-intro.png"}
-              tone="dark"
-            />
-          ),
+          image: {
+            src: intro.imageUrl ?? "/visuals/deck/careers-intro.png",
+            alt: isHr ? "Radno okruženje u proizvodnji" : "Production work environment",
+            priority: true,
+          },
         },
         {
-          ...slides[1],
-          body: slides[1]?.body ?? copy[1].body,
-          background: slides[1]?.background ?? "dark",
-          layout: slides[1]?.layout ?? "splitReverse",
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Rad na proizvodnoj liniji" : "Production line work"}
-              src={slides[1]?.imageUrl ?? "/visuals/deck/careers-operator.png"}
-            />
-          ),
-        },
-        {
-          ...slides[2],
-          body: slides[2]?.body ?? copy[2].body,
-          background: slides[2]?.background ?? "theme",
-          layout: slides[2]?.layout ?? "split",
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Obuka kroz praksu u proizvodnji" : "Training through production practice"}
-              src={slides[2]?.imageUrl ?? "/visuals/deck/careers-training.png"}
-            />
-          ),
-        },
-        {
-          ...slides[3],
+          ...roles,
+          eyebrow: isHr ? "Posao i obuka" : "Work and training",
+          title: isHr ? "Što posao traži, a što nudimo." : "What the work asks, and what we offer.",
           body: (
             <SlideBody
-              body={slides[3]?.body ?? copy[3].body}
-              support={<DeckCardGrid iconSet="none" items={positionCards} />}
+              lead={
+                isHr
+                  ? "Rad na liniji je konkretan i pošten — **ritam, urednost i učenje** kroz praksu."
+                  : "Line work is concrete and honest — **rhythm, order, and learning** through practice."
+              }
+              points={[
+                {
+                  title: isHr ? "Pažnja i ritam" : "Attention and rhythm",
+                  body: isHr
+                    ? "Linija traži **stalnu pažnju** i pouzdan tempo."
+                    : "The line needs **steady attention** and a reliable pace.",
+                },
+                {
+                  title: isHr ? "Odgovornost" : "Responsibility",
+                  body: isHr
+                    ? "**Urednost** i reakcija na vrijeme drže proces stabilnim."
+                    : "**Order** and timely reaction keep the process stable.",
+                },
+                {
+                  title: isHr ? "Učenje kroz praksu" : "Learning by doing",
+                  body: isHr
+                    ? "Ne moraš znati sve prvog dana — **učiš u pogonu**."
+                    : "You don't need to know everything on day one — **you learn on the floor**.",
+                },
+              ]}
             />
           ),
-          background: slides[3]?.background ?? "light",
-          layout: slides[3]?.layout ?? "splitReverse",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Otvorene pozicije povezane s pogonom" : "Open roles tied to the plant"}
-              src={slides[3]?.imageUrl ?? "/visuals/deck/careers-positions.png"}
-            />
-          ),
+          layout: "splitReverse",
+          image: {
+            src: roles.imageUrl ?? "/visuals/deck/careers-operator.png",
+            alt: isHr ? "Rad na proizvodnoj liniji" : "Production line work",
+          },
         },
         {
-          ...slides[4],
+          ...openings,
           body: (
             <SlideBody
-              body={slides[4]?.body ?? copy[4].body}
+              lead={
+                isHr
+                  ? "Prvi oglasi su **kratki, konkretni** i vezani uz pogon."
+                  : "First openings are **short, concrete**, and tied to the plant."
+              }
+              points={positionPoints}
+            />
+          ),
+          image: {
+            src: openings.imageUrl ?? "/visuals/deck/careers-positions.png",
+            alt: isHr ? "Otvorene pozicije povezane s pogonom" : "Open roles tied to the plant",
+          },
+        },
+        {
+          ...application,
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "Kandidatura može početi **kratkom porukom** — bez dugog obrasca."
+                  : "An application can start with a **short message** — no long form."
+              }
               support={<CareerApplicationCard locale={locale} positions={positions} />}
             />
           ),
-          background: slides[4]?.background ?? "dark",
-          layout: slides[4]?.layout ?? "split",
-          primaryCta: slides[4]?.primaryCta ?? {
-            label: isHr ? "Posalji prijavu" : "Send application",
-            href: getWhatsAppHref(locale),
+          layout: "split",
+          hideVisualOnMobile: true,
+          primaryCta: {
+            label: isHr ? "Pošalji prijavu" : "Send application",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
-          tone: "dark",
           visual: (
             <ImagePanel
               alt={isHr ? "Kratka prijava za rad u proizvodnji" : "Short application for production work"}
-              src={slides[4]?.imageUrl ?? "/visuals/deck/careers-application.png"}
+              src={application.imageUrl ?? "/visuals/deck/careers-application.png"}
             />
           ),
         },

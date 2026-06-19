@@ -80,7 +80,7 @@ function mapProduct(row: ProductRow, locale: Locale): ProductWithHref {
     highlights: {
       hr: [
         row.recommended_for_hr ?? "Domovi, firme i apartmani",
-        row.business_note_hr ?? "Posebna ponuda za redovite kolicine",
+        row.business_note_hr ?? "Posebna ponuda za redovite količine",
         "Jednostavan WhatsApp upit",
       ],
       en: [
@@ -108,7 +108,7 @@ function mapProduct(row: ProductRow, locale: Locale): ProductWithHref {
       {
         label: { hr: "Namjena", en: "Use" },
         value: {
-          hr: row.recommended_for_hr ?? "Redovita potrosnja",
+          hr: row.recommended_for_hr ?? "Redovita potrošnja",
           en: row.recommended_for_en ?? "Regular demand",
         },
       },

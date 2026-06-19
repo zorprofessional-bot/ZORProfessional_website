@@ -76,8 +76,8 @@ const menuChapterSlides: Record<
     home: { first: "hero", last: "brzi-put-dalje" },
     products: { first: "pregled", last: "poslovne-kolicine" },
     production: { first: "hrvatska-proizvodnja", last: "skladiste" },
-    calculator: { first: "intro", last: "whatsapp-upit" },
-    blog: { first: "featured", last: "savjeti" },
+    calculator: { first: "unos", last: "whatsapp-upit" },
+    blog: { first: "featured", last: "vodici" },
     careers: { first: "uvod", last: "prijava" },
     contact: { first: "whatsapp", last: "lokacija" },
   },
@@ -85,8 +85,8 @@ const menuChapterSlides: Record<
     home: { first: "hero", last: "quick-path" },
     products: { first: "overview", last: "business-quantities" },
     production: { first: "croatian-production", last: "warehouse" },
-    calculator: { first: "intro", last: "whatsapp-inquiry" },
-    blog: { first: "featured", last: "advice" },
+    calculator: { first: "input", last: "whatsapp-inquiry" },
+    blog: { first: "featured", last: "guides" },
     careers: { first: "intro", last: "application" },
     contact: { first: "whatsapp", last: "location" },
   },
@@ -161,10 +161,38 @@ export const whatsappCopy: Record<Locale, string> = {
   en: "Hello, I am interested in ZOR Professional toilet paper.",
 };
 
-export function getWhatsAppHref(locale: Locale) {
-  return `https://wa.me/${siteContact.whatsappNumber}?text=${encodeURIComponent(
+// Resolved public contact values. Source of truth is the `site_settings` table
+// (via getSiteContact); this static object is the fallback when Supabase is off.
+export type SiteContact = {
+  brand: string;
+  company: string;
+  location: string;
+  city: string;
+  phone: string;
+  email: string;
+  whatsappNumber: string;
+  shopUrl: string;
+};
+
+export const fallbackSiteContact: SiteContact = {
+  brand: siteContact.brand,
+  company: siteContact.company,
+  location: siteContact.location,
+  city: siteContact.city,
+  phone: siteContact.phone,
+  email: siteContact.email,
+  whatsappNumber: siteContact.whatsappNumber,
+  shopUrl: "https://shop.zorpro.hr",
+};
+
+export function buildWhatsAppHref(whatsappNumber: string, locale: Locale) {
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     whatsappCopy[locale],
   )}`;
+}
+
+export function getWhatsAppHref(locale: Locale) {
+  return buildWhatsAppHref(siteContact.whatsappNumber, locale);
 }
 
 export function getLanguageHrefs(

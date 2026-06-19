@@ -45,32 +45,27 @@ export function BlogDetailPage({
           eyebrow: post.eyebrow[locale],
           title: post.title[locale],
           body: post.excerpt[locale],
-          background: "theme",
-          layout: "split",
           primaryCta: {
-            label: isHr ? "Svi clanci" : "All articles",
+            label: isHr ? "Svi članci" : "All articles",
             href: routes[locale].blog,
             variant: "secondary",
           },
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Prakticni vodic prije upita" : "Practical guide before inquiry"}
-              src="/visuals/deck/blog-featured.png"
-            />
-          ),
+          image: {
+            src: "/visuals/deck/blog-featured.png",
+            alt: isHr ? "Praktični vodič prije upita" : "Practical guide before inquiry",
+            priority: true,
+          },
         },
         {
           id: "reader",
-          eyebrow: isHr ? "Clanak" : "Article",
-          title: isHr
-            ? "Reader panel se skrola, deck shell ostaje stabilan."
-            : "The reader panel scrolls, the deck shell stays stable.",
+          eyebrow: isHr ? "Članak" : "Article",
+          title: isHr ? "Cijeli članak na jednom mjestu." : "The full article in one place.",
           body: (
             <SlideBody
-              body={
+              lead={
                 isHr
-                  ? "Ovo je jedina dopustena scroll iznimka na javnim prezentacijskim stranicama."
-                  : "This is the allowed scroll exception on public presentation pages."
+                  ? "Tekst je u panelu koji se skrola — ostatak stranice **miruje**."
+                  : "The text sits in a panel that scrolls — the rest of the page **stays still**."
               }
               support={
                 <ArticleReader
@@ -82,11 +77,11 @@ export function BlogDetailPage({
               }
             />
           ),
-          background: "editorial",
           layout: "splitReverse",
+          hideVisualOnMobile: true,
           visual: (
             <ImagePanel
-              alt={isHr ? "Jednostavno citanje prakticnog vodica" : "Simple practical guide reading"}
+              alt={isHr ? "Jednostavno čitanje praktičnog vodiča" : "Simple practical guide reading"}
               src="/visuals/deck/blog-guides.png"
             />
           ),
@@ -94,22 +89,21 @@ export function BlogDetailPage({
         {
           id: "povezano",
           eyebrow: isHr ? "Povezano" : "Related",
-          title: isHr ? "Nastavite kroz kratke vodice." : "Continue through short guides.",
+          title: isHr ? "Nastavite kroz kratke vodiče." : "Continue through short guides.",
           body: (
             <SlideBody
-              body={
+              lead={
                 isHr
-                  ? "Svaki tekst treba pomoci kupcu postaviti bolji sljedeci upit."
-                  : "Each post should help a buyer ask a better next question."
+                  ? "Svaki tekst pomaže postaviti **bolji sljedeći upit**."
+                  : "Each post helps you ask a **better next question**."
               }
               support={<BlogCardsVisual locale={locale} posts={related} />}
             />
           ),
-          background: "light",
-          layout: "split",
+          hideVisualOnMobile: true,
           visual: (
             <ImagePanel
-              alt={isHr ? "Povezani vodici za opskrbu" : "Related supply guides"}
+              alt={isHr ? "Povezani vodiči za opskrbu" : "Related supply guides"}
               src="/visuals/deck/blog-advice.png"
             />
           ),

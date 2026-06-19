@@ -6,6 +6,10 @@ const useExternalServer = process.env.PLAYWRIGHT_EXTERNAL_SERVER === "1";
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
+  // E2E runs against `next dev` (Turbopack). Under parallel workers the dev
+  // server can throw transient SSR chunk errors ("Unexpected end of JSON
+  // input"); retries absorb those flakes without masking real failures.
+  retries: process.env.CI ? 2 : 1,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL,

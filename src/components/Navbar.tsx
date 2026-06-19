@@ -1,15 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Container } from "./Container";
 import { ButtonLink } from "./ButtonLink";
 import { LogoMark } from "./LogoMark";
 import {
+  buildWhatsAppHref,
   desktopNav,
-  getWhatsAppHref,
   routes,
   type Locale,
   type RouteKey,
 } from "@/content/site";
+import { useSiteContact } from "@/components/SiteSettingsProvider";
 import type { DeckSlideMeta } from "@/components/deck/types";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +41,7 @@ export function Navbar({
   tone = "dark",
 }: NavbarProps) {
   const dark = tone === "dark";
+  const contact = useSiteContact();
   const hasDesktopSlideTabs = Boolean(slides?.length && onSlideSelect && slideLabels);
 
   return (
@@ -127,7 +131,7 @@ export function Navbar({
               </Link>
             </div>
             <div className="hidden lg:block">
-              <ButtonLink href={getWhatsAppHref(locale)} onDark={dark} variant="primary">
+              <ButtonLink href={buildWhatsAppHref(contact.whatsappNumber, locale)} onDark={dark} variant="primary">
                 <MessageCircle aria-hidden size={16} />
                 {locale === "hr" ? "WhatsApp upit" : "WhatsApp inquiry"}
               </ButtonLink>

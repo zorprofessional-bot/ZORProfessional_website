@@ -28,6 +28,12 @@ export type DeckSlideDefinition = {
   eyebrow?: string;
   title: string;
   body: ReactNode;
+  /**
+   * Slika slajda. Na desktopu se prikazuje u svojoj koloni; na mobitelu postaje
+   * pozadina cijelog slajda s tamnim preljevom (tekst preko slike). Za custom
+   * vizuale (npr. paket proizvoda) koristi `visual`.
+   */
+  image?: { src: string; alt: string; priority?: boolean };
   visual?: ReactNode;
   primaryCta?: DeckAction;
   secondaryCta?: DeckAction;
@@ -36,6 +42,11 @@ export type DeckSlideDefinition = {
   background?: DeckBackground;
   tone?: DeckTone;
   align?: "left" | "center";
+  /**
+   * Skriva dekorativni vizual na mobitelu (md:flex). Koristi se za slajdove
+   * čiji je sadržaj forma/interaktivna kartica, da stane bez skrolanja.
+   */
+  hideVisualOnMobile?: boolean;
 };
 
 export type DeckSlideMeta = {

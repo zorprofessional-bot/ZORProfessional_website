@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { ButtonLink } from "@/components/ButtonLink";
 import { cn } from "@/lib/utils";
+import { ImagePanel, SlideLead } from "./DeckVisuals";
 import type { DeckSlideDefinition } from "./types";
 
 const backgroundClasses = {
@@ -22,7 +24,9 @@ export function DeckSlide({
   background = "theme",
   body,
   eyebrow,
+  hideVisualOnMobile = false,
   id,
+  image,
   layout = "split",
   primaryCta,
   secondaryCta,
@@ -33,7 +37,12 @@ export function DeckSlide({
   const onDark = tone === "dark";
   const allActions = actions ?? [primaryCta, secondaryCta].filter(Boolean);
   const centered = align === "center" || layout === "center";
-  const hasVisual = Boolean(visual);
+  const resolvedVisual = image ? (
+    <ImagePanel alt={image.alt} priority={image.priority} src={image.src} />
+  ) : (
+    visual
+  );
+  const hasVisual = Boolean(resolvedVisual);
 
   const content = (
     <div
@@ -47,7 +56,7 @@ export function DeckSlide({
       {eyebrow ? (
         <p
           className={cn(
-            "mb-4 text-xs font-bold uppercase tracking-[0.22em]",
+            "deck-eyebrow text-xs font-bold uppercase tracking-[0.22em]",
             onDark ? "text-white/72" : "text-zor-blue",
           )}
         >
@@ -56,8 +65,8 @@ export function DeckSlide({
       ) : null}
       <h1
         className={cn(
-          "text-3xl font-semibold leading-[1.08] sm:text-5xl sm:leading-[1.04] lg:text-6xl",
-          layout === "dense" && "lg:text-5xl",
+          "deck-title font-semibold",
+          layout === "dense" && "deck-title--dense",
         )}
         id={`${id}-title`}
       >
@@ -65,17 +74,17 @@ export function DeckSlide({
       </h1>
       <div
         className={cn(
-          "mt-5 text-base leading-7 sm:text-lg",
+          "deck-body",
           onDark ? "text-white/80" : "text-zor-muted",
           centered && "mx-auto max-w-2xl",
         )}
       >
-        {typeof body === "string" ? <p>{body}</p> : body}
+        {typeof body === "string" ? <SlideLead text={body} /> : body}
       </div>
       {allActions.length > 0 ? (
         <div
           className={cn(
-            "mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center",
+            "deck-actions flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center",
             centered && "sm:justify-center",
           )}
         >
@@ -97,14 +106,15 @@ export function DeckSlide({
     </div>
   );
 
-  const visualNode = visual ? (
+  const visualNode = resolvedVisual ? (
     <div
       className={cn(
-        "order-2 flex min-h-0 w-full min-w-0 items-center justify-center overflow-hidden",
+        "order-2 min-h-0 w-full min-w-0 items-center justify-center overflow-hidden",
+        image || hideVisualOnMobile ? "hidden md:flex" : "flex",
         (layout === "splitReverse" || layout === "visualFirst") && "lg:order-1",
       )}
     >
-      {visual}
+      {resolvedVisual}
     </div>
   ) : null;
 
@@ -113,14 +123,27 @@ export function DeckSlide({
       aria-labelledby={`${id}-title`}
       aria-roledescription="slide"
       className={cn(
-        "min-h-full md:h-full md:overflow-hidden",
+        "relative isolate min-h-full md:h-full md:overflow-hidden",
         backgroundClasses[background],
       )}
       data-slide-id={id}
     >
+      {image ? (
+        <div aria-hidden className="absolute inset-0 md:hidden">
+          <Image
+            alt=""
+            className="object-cover"
+            fill
+            priority={image.priority}
+            sizes="100vw"
+            src={image.src}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,26,61,0.55)_0%,rgba(6,26,61,0.74)_48%,rgba(6,26,61,0.92)_100%)]" />
+        </div>
+      ) : null}
       <div
         className={cn(
-          "mx-auto grid min-h-full max-w-7xl content-start justify-items-center gap-5 px-4 pb-16 pt-6 sm:px-6 md:h-full md:content-center md:items-center md:gap-8 md:px-8 md:py-5 lg:px-10",
+          "relative z-10 mx-auto grid min-h-full max-w-7xl content-start justify-items-center gap-[clamp(0.9rem,0.5rem+1.6vh,1.75rem)] px-4 pb-10 pt-5 sm:px-6 md:h-full md:content-center md:items-center md:gap-8 md:px-8 md:py-5 lg:px-10",
           hasVisual && layout !== "center"
             ? "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
             : "place-items-center",

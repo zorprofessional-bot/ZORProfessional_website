@@ -1,24 +1,23 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  ImagePanel,
-  SlideBody,
-} from "@/components/deck/DeckVisuals";
+import { ImagePanel, SlideBody } from "@/components/deck/DeckVisuals";
 import { ContactFormCard } from "@/components/deck/InteractiveDeckCards";
 import { chapterLabels, contactDeck } from "@/content/deck";
-import { getWhatsAppHref, siteContact, type Locale } from "@/content/site";
+import { buildWhatsAppHref, type Locale } from "@/content/site";
 import {
   resolveDeckSlideContent,
   type DeckPageData,
 } from "@/lib/data/deck";
+import { getSiteContact } from "@/lib/data/settings";
 
 type ContactPageProps = {
   deckData?: DeckPageData;
   locale: Locale;
 };
 
-export function ContactPage({ deckData, locale }: ContactPageProps) {
+export async function ContactPage({ deckData, locale }: ContactPageProps) {
   const copy = contactDeck[locale];
   const isHr = locale === "hr";
+  const contact = await getSiteContact();
   const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
 
   return (
@@ -30,56 +29,86 @@ export function ContactPage({ deckData, locale }: ContactPageProps) {
       slides={[
         {
           ...slides[0],
-          body: slides[0]?.body ?? copy[0].body,
-          background: slides[0]?.background ?? "theme",
-          layout: slides[0]?.layout ?? "split",
-          primaryCta: slides[0]?.primaryCta ?? {
-            label: isHr ? "Posalji WhatsApp upit" : "Send WhatsApp inquiry",
-            href: getWhatsAppHref(locale),
-          },
-          secondaryCta: slides[0]?.secondaryCta ?? {
-            label: siteContact.email,
-            href: `mailto:${siteContact.email}`,
-            variant: "secondary",
-          },
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Kratka poruka za upit" : "Short inquiry message"}
-              src={slides[0]?.imageUrl ?? "/visuals/deck/contact-whatsapp.png"}
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "Najbrži početak je **kratka poruka** — napišite prostor i okvirnu potrošnju."
+                  : "The fastest start is a **short message** — tell us the space and rough demand."
+              }
+              points={[
+                {
+                  title: isHr ? "Dom ili apartman" : "Home or apartment",
+                  body: isHr ? "Kućna ili **sezonska** zaliha." : "Household or **seasonal** stock.",
+                },
+                {
+                  title: isHr ? "Firma ili ustanova" : "Company or institution",
+                  body: isHr ? "**Redovita** nabava i ponuda za količine." : "**Recurring** supply and quantity offers.",
+                },
+              ]}
             />
           ),
+          primaryCta: {
+            label: isHr ? "Pošalji WhatsApp upit" : "Send WhatsApp inquiry",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
+          },
+          secondaryCta: {
+            label: contact.email,
+            href: `mailto:${contact.email}`,
+            variant: "secondary",
+          },
+          image: {
+            src: slides[0]?.imageUrl ?? "/visuals/deck/contact-whatsapp.png",
+            alt: isHr ? "Kratka poruka za upit" : "Short inquiry message",
+            priority: true,
+          },
         },
         {
           ...slides[1],
           body: (
             <SlideBody
-              body={slides[1]?.body ?? copy[1].body}
+              lead={
+                isHr
+                  ? "Trebate li **više konteksta**, forma slaže email s osnovnim podacima."
+                  : "Need **more context**? The form prepares an email with the basics."
+              }
               support={<ContactFormCard locale={locale} />}
             />
           ),
-          background: slides[1]?.background ?? "dark",
-          layout: slides[1]?.layout ?? "splitReverse",
-          tone: "dark",
+          layout: "splitReverse",
+          hideVisualOnMobile: true,
           visual: (
             <ImagePanel
-              alt={isHr ? "Email upit s vise konteksta" : "Email inquiry with more context"}
+              alt={isHr ? "Email upit s više konteksta" : "Email inquiry with more context"}
               src={slides[1]?.imageUrl ?? "/visuals/deck/contact-form.png"}
             />
           ),
         },
         {
           ...slides[2],
-          body: slides[2]?.body ?? copy[2].body,
-          background: slides[2]?.background ?? "theme",
-          layout: slides[2]?.layout ?? "split",
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Lokacija i dostupnost iz skladista" : "Location and warehouse availability"}
-              src={slides[2]?.imageUrl ?? "/visuals/deck/contact-location.png"}
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "**Robni terminali Jankomir** dio su priče o dostupnosti."
+                  : "**Robni terminali Jankomir** is part of the availability story."
+              }
+              points={[
+                {
+                  title: isHr ? "Lokacija u Zagrebu" : "Zagreb location",
+                  body: isHr ? "Uz **proizvodnju i skladište**." : "Next to **production and warehouse**.",
+                },
+                {
+                  title: isHr ? "Brži dogovor" : "Faster coordination",
+                  body: isHr ? "Blizina skraćuje put do **dostupne zalihe**." : "Proximity shortens the path to **available stock**.",
+                },
+              ]}
             />
           ),
+          image: {
+            src: slides[2]?.imageUrl ?? "/visuals/deck/contact-location.png",
+            alt: isHr ? "Lokacija i dostupnost iz skladišta" : "Location and warehouse availability",
+          },
         },
       ]}
       theme={deckData?.chapter.theme ?? "contact"}

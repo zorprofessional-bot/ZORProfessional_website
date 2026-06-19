@@ -306,14 +306,19 @@ Supabase bucketi:
 - `blog-images`
 - `career-cv`
 
-U ovoj v1 admin fazi upload UI nije implementiran. Admin koristi `image_url` i `cv_url` polja.
+Upload slika je implementiran za deck slideove, proizvode i blog cover slike.
+
+U formama za slide, proizvod i blog post polje za sliku (`ImageUploadField`) ima:
+
+- text input gdje mozes zalijepiti postojeci `image_url`
+- file picker koji uploada sliku u odgovarajuci bucket (`deck-images`, `product-images`, `blog-images`)
+- nakon uploada automatski upisuje public URL u polje i pokazuje preview
+
+Upload radi samo kad je Supabase konfiguriran i kad si prijavljen kao `admin` ili `editor` (storage RLS).
 
 TODO za kasnije:
 
-- dodati file picker
-- uploadati datoteku u odgovarajuci bucket
-- nakon uploada upisati public URL u `image_url`
-- za `career-cv` koristiti private/signed URL workflow
+- `career-cv` upload kroz private/signed URL workflow (jos koristi `cv_url` polje)
 
 ## Public Integration
 

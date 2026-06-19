@@ -1,9 +1,5 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  BlogCardsVisual,
-  ImagePanel,
-  SlideBody,
-} from "@/components/deck/DeckVisuals";
+import { BlogCardsVisual, SlideBody } from "@/components/deck/DeckVisuals";
 import { blogDeck, chapterLabels } from "@/content/deck";
 import { getPosts, type BlogPost } from "@/content/blog";
 import { routes, type Locale } from "@/content/site";
@@ -25,11 +21,8 @@ export function BlogIndexPage({
 }: BlogIndexPageProps) {
   const copy = blogDeck[locale];
   const isHr = locale === "hr";
-  const slides = copy.map((slide) => resolveDeckSlideContent(deckData, slide));
-  const guidePosts = posts.filter(
-    (post) => post.id === "paper-planning" || post.id === "apartments",
-  );
-  const guideVisualPosts = guidePosts.length > 0 ? guidePosts : posts.slice(0, 2);
+  const featured = resolveDeckSlideContent(deckData, copy[0]);
+  const guides = resolveDeckSlideContent(deckData, copy[1], ["vodici", "guides"]);
 
   return (
     <DeckPage
@@ -39,54 +32,54 @@ export function BlogIndexPage({
       menuFlow
       slides={[
         {
-          ...slides[0],
+          ...featured,
           body: (
             <SlideBody
-              body={slides[0]?.body ?? copy[0].body}
-              support={<BlogCardsVisual locale={locale} posts={posts.slice(0, 2)} />}
+              lead={
+                isHr
+                  ? "Blog ne glumi magazin — **kratki vodiči** pomažu prije upita."
+                  : "The blog isn't a magazine — **short guides** help before an inquiry."
+              }
+              support={<BlogCardsVisual locale={locale} posts={posts.slice(0, 3)} />}
             />
           ),
-          background: slides[0]?.background ?? "theme",
-          layout: slides[0]?.layout ?? "split",
-          primaryCta: slides[0]?.primaryCta ?? {
+          primaryCta: featured.primaryCta ?? {
             label: isHr ? "Pogledaj proizvode" : "View products",
             href: routes[locale].products,
           },
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Kratki vodici prije upita" : "Short guides before inquiry"}
-              src={slides[0]?.imageUrl ?? "/visuals/deck/blog-featured.png"}
-            />
-          ),
+          hideVisualOnMobile: true,
+          image: {
+            src: featured.imageUrl ?? "/visuals/deck/blog-featured.png",
+            alt: isHr ? "Kratki vodiči prije upita" : "Short guides before inquiry",
+            priority: true,
+          },
         },
         {
-          ...slides[1],
+          ...guides,
           body: (
             <SlideBody
-              body={slides[1]?.body ?? copy[1].body}
-              support={<BlogCardsVisual locale={locale} posts={guideVisualPosts} />}
+              lead={
+                isHr
+                  ? "Najbolji tekstovi vode prema **jasnijoj količini** i **boljem pitanju**."
+                  : "The best posts lead to a **clearer quantity** and a **better question**."
+              }
+              points={[
+                {
+                  title: isHr ? "Planiranje potrošnje" : "Planning consumption",
+                  body: isHr ? "Koliko papira **stvarno** treba mjesečno." : "How much paper you **actually** need monthly.",
+                },
+                {
+                  title: isHr ? "Lokalna proizvodnja" : "Local production",
+                  body: isHr ? "Zašto je **blizina** važna za dostupnost." : "Why **proximity** matters for availability.",
+                },
+              ]}
             />
           ),
-          background: slides[1]?.background ?? "editorial",
-          layout: slides[1]?.layout ?? "splitReverse",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Jednostavno planiranje potrosnje" : "Simple consumption planning"}
-              src={slides[1]?.imageUrl ?? "/visuals/deck/blog-guides.png"}
-            />
-          ),
-        },
-        {
-          ...slides[2],
-          body: slides[2]?.body ?? copy[2].body,
-          background: slides[2]?.background ?? "light",
-          layout: slides[2]?.layout ?? "split",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Savjeti povezani s opskrbom" : "Advice connected to supply"}
-              src={slides[2]?.imageUrl ?? "/visuals/deck/blog-advice.png"}
-            />
-          ),
+          layout: "splitReverse",
+          image: {
+            src: guides.imageUrl ?? "/visuals/deck/blog-guides.png",
+            alt: isHr ? "Jednostavno planiranje potrošnje" : "Simple consumption planning",
+          },
         },
       ]}
       theme={deckData?.chapter.theme ?? "blog"}

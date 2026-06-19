@@ -1,27 +1,23 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import {
-  ImagePanel,
-  RouteChoiceGrid,
-  SlideBody,
-} from "@/components/deck/DeckVisuals";
-import {
-  chapterLabels,
-  homeDeck,
-} from "@/content/deck";
-import { getWhatsAppHref, routes, type Locale } from "@/content/site";
+import { RouteChoiceGrid, SlideBody } from "@/components/deck/DeckVisuals";
+import { chapterLabels, homeDeck } from "@/content/deck";
+import { audienceCards, valueCards } from "@/content/home";
+import { buildWhatsAppHref, routes, type Locale } from "@/content/site";
 import {
   resolveDeckSlideContent,
   type DeckPageData,
 } from "@/lib/data/deck";
+import { getSiteContact } from "@/lib/data/settings";
 
 type HomePageProps = {
   deckData?: DeckPageData;
   locale: Locale;
 };
 
-export function HomePage({ deckData, locale }: HomePageProps) {
+export async function HomePage({ deckData, locale }: HomePageProps) {
   const copy = homeDeck[locale];
   const isHr = locale === "hr";
+  const contact = await getSiteContact();
   const hero = resolveDeckSlideContent(deckData, copy.hero);
   const audience = resolveDeckSlideContent(deckData, copy.audience, ["audience"]);
   const why = resolveDeckSlideContent(deckData, copy.why, ["why-zor"]);
@@ -37,70 +33,75 @@ export function HomePage({ deckData, locale }: HomePageProps) {
         {
           ...hero,
           body: hero.body ?? copy.hero.body,
-          background: hero.background ?? "theme",
           layout: hero.layout ?? "split",
           primaryCta: hero.primaryCta ?? {
-            label: isHr ? "PoÅ¡alji WhatsApp upit" : "Send WhatsApp inquiry",
-            href: getWhatsAppHref(locale),
+            label: isHr ? "Pošalji WhatsApp upit" : "Send WhatsApp inquiry",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
           secondaryCta: hero.secondaryCta ?? {
             label: isHr ? "Pogledaj proizvode" : "View products",
             href: routes[locale].products,
             variant: "secondary",
           },
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={
-                isHr
-                  ? "ZOR Professional toaletni papir"
-                  : "ZOR Professional toilet paper"
-              }
-              priority
-              src={hero.imageUrl ?? "/visuals/deck/home-hero.png"}
-              tone="dark"
-            />
-          ),
+          image: {
+            src: hero.imageUrl ?? "/visuals/deck/home-hero.png",
+            alt: isHr ? "ZOR Professional toaletni papir" : "ZOR Professional toilet paper",
+            priority: true,
+          },
         },
         {
           ...audience,
-          body: audience.body ?? copy.audience.body,
-          background: audience.background ?? "light",
-          layout: audience.layout ?? "splitReverse",
-          tone: "light",
-          visual: (
-            <ImagePanel
-              alt={
+          body: (
+            <SlideBody
+              lead={
                 isHr
-                  ? "Prostori koji svakodnevno koriste toaletni papir"
-                  : "Spaces that use toilet paper every day"
+                  ? "Jedan praktičan izbor za prostore koji **svaki dan** troše papir — bez kataloškog lutanja."
+                  : "One practical choice for spaces that use paper **every day** — without catalogue noise."
               }
-              src={audience.imageUrl ?? "/visuals/deck/home-audience.png"}
+              points={audienceCards[locale]}
             />
           ),
+          layout: audience.layout ?? "splitReverse",
+          image: {
+            src: audience.imageUrl ?? "/visuals/deck/home-audience.png",
+            alt: isHr
+              ? "Prostori koji svakodnevno koriste toaletni papir"
+              : "Spaces that use toilet paper every day",
+          },
         },
         {
           ...why,
-          body: why.body ?? copy.why.body,
-          background: why.background ?? "dark",
-          layout: why.layout ?? "split",
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Proizvodnja i dostupnost ZOR papira" : "ZOR paper production and availability"}
-              src={why.imageUrl ?? "/visuals/deck/home-why-zor.png"}
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "Kupac treba znati **što** dobiva, **kada** to može dobiti i **kome** poslati upit."
+                  : "A buyer should know **what** they get, **when** they can get it, and **who** to ask."
+              }
+              points={valueCards[locale]}
             />
           ),
+          layout: why.layout ?? "split",
+          image: {
+            src: why.imageUrl ?? "/visuals/deck/home-why-zor.png",
+            alt: isHr ? "Proizvodnja i dostupnost ZOR papira" : "ZOR paper production and availability",
+          },
         },
         {
           ...quickPath,
           body: (
-            <SlideBody body={quickPath.body ?? copy.quickPath.body} support={<RouteChoiceGrid locale={locale} />} />
+            <SlideBody
+              lead={
+                isHr
+                  ? "Odaberite **sljedeći korak** bez lutanja po stranici."
+                  : "Pick your **next step** without wandering the site."
+              }
+              support={<RouteChoiceGrid locale={locale} />}
+            />
           ),
-          background: quickPath.background ?? "theme",
           layout: quickPath.layout ?? "split",
           primaryCta: quickPath.primaryCta ?? {
-            label: isHr ? "IzraÄunaj potroÅ¡nju" : "Calculate consumption",
+            label: isHr ? "Izračunaj potrošnju" : "Calculate consumption",
             href: routes[locale].calculator,
           },
           secondaryCta: quickPath.secondaryCta ?? {
@@ -108,13 +109,10 @@ export function HomePage({ deckData, locale }: HomePageProps) {
             href: routes[locale].contact,
             variant: "secondary",
           },
-          tone: "dark",
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Brzi odabir sljedeceg koraka" : "Fast next-step choice"}
-              src={quickPath.imageUrl ?? "/visuals/deck/home-quick-path.png"}
-            />
-          ),
+          image: {
+            src: quickPath.imageUrl ?? "/visuals/deck/home-quick-path.png",
+            alt: isHr ? "Brzi odabir sljedećeg koraka" : "Fast next-step choice",
+          },
         },
       ]}
       theme={deckData?.chapter.theme ?? "home"}

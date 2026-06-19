@@ -1,12 +1,13 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import { ImagePanel } from "@/components/deck/DeckVisuals";
+import { SlideBody } from "@/components/deck/DeckVisuals";
 import { chapterLabels, productsDeck } from "@/content/deck";
 import { getProducts, type Product } from "@/content/products";
-import { getWhatsAppHref, routes, type Locale } from "@/content/site";
+import { buildWhatsAppHref, routes, type Locale } from "@/content/site";
 import {
   resolveDeckSlideContent,
   type DeckPageData,
 } from "@/lib/data/deck";
+import { getSiteContact } from "@/lib/data/settings";
 
 type ProductsIndexPageProps = {
   deckData?: DeckPageData;
@@ -14,13 +15,14 @@ type ProductsIndexPageProps = {
   products?: Array<Product & { href: string }>;
 };
 
-export function ProductsIndexPage({
+export async function ProductsIndexPage({
   deckData,
   locale,
   products = getProducts(locale),
 }: ProductsIndexPageProps) {
   const copy = productsDeck[locale];
   const isHr = locale === "hr";
+  const contact = await getSiteContact();
   const overview = resolveDeckSlideContent(deckData, copy.overview);
   const business = resolveDeckSlideContent(deckData, copy.business, [
     "business-quantities",
@@ -35,25 +37,43 @@ export function ProductsIndexPage({
       slides={[
         {
           ...overview,
-          body: overview.body ?? copy.overview.body,
-          background: overview.background ?? "theme",
-          layout: overview.layout ?? "split",
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "Bez webshop pritiska — pregled služi **odluci**: koji paket za kakav prostor."
+                  : "No webshop pressure — the overview supports one **decision**: which pack for which space."
+              }
+              points={[
+                {
+                  title: "ZORPro 24",
+                  body: isHr
+                    ? "Za **redovitu potrošnju** doma, u uredu ili apartmanu."
+                    : "For **regular use** at home, in the office, or an apartment.",
+                },
+                {
+                  title: "ZORPro 36",
+                  body: isHr
+                    ? "Za **mirniju zalihu** i rjeđe narudžbe kod veće potrošnje."
+                    : "For **calmer stock** and fewer orders at higher demand.",
+                },
+              ]}
+            />
+          ),
           primaryCta: overview.primaryCta ?? {
-            label: isHr ? "Posalji upit za cijenu" : "Ask for price",
-            href: getWhatsAppHref(locale),
+            label: isHr ? "Pošalji upit za cijenu" : "Ask for price",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
           secondaryCta: overview.secondaryCta ?? {
-            label: isHr ? "Izracunaj potrosnju" : "Calculate consumption",
+            label: isHr ? "Izračunaj potrošnju" : "Calculate consumption",
             href: routes[locale].calculator,
             variant: "secondary",
           },
-          visual: (
-            <ImagePanel
-              alt={isHr ? "ZOR Professional proizvodi" : "ZOR Professional products"}
-              priority
-              src={overview.imageUrl ?? "/visuals/deck/product-range.png"}
-            />
-          ),
+          image: {
+            src: overview.imageUrl ?? "/visuals/deck/product-range.png",
+            alt: isHr ? "ZOR Professional proizvodi" : "ZOR Professional products",
+            priority: true,
+          },
         },
         ...products.map((product) => {
           const productCopy = resolveDeckSlideContent(deckData, {
@@ -65,8 +85,14 @@ export function ProductsIndexPage({
 
           return {
             ...productCopy,
-            body: productCopy.body ?? product.summary[locale],
-            background: productCopy.background ?? ("soft" as const),
+            body: (
+              <SlideBody
+                lead={productCopy.body ?? product.summary[locale]}
+                points={product.highlights[locale].map((highlight) => ({
+                  title: highlight,
+                }))}
+              />
+            ),
             layout: productCopy.layout ?? ("splitReverse" as const),
             primaryCta: productCopy.primaryCta ?? {
               label: isHr ? "Detalji proizvoda" : "Product details",
@@ -74,32 +100,50 @@ export function ProductsIndexPage({
             },
             secondaryCta: productCopy.secondaryCta ?? {
               label: isHr ? "WhatsApp upit" : "WhatsApp inquiry",
-              href: getWhatsAppHref(locale),
+              href: buildWhatsAppHref(contact.whatsappNumber, locale),
               variant: "secondary" as const,
             },
-            visual: <ImagePanel alt={product.name[locale]} src={product.image} />,
+            image: { src: product.image, alt: product.name[locale] },
           };
         }),
         {
           ...business,
-          body: business.body ?? copy.business.body,
-          background: business.background ?? "light",
-          layout: business.layout ?? "split",
+          body: (
+            <SlideBody
+              lead={
+                isHr
+                  ? "Web trgovina dolazi kasnije — **upit radi odmah**, a ponudu slažemo prema prostoru i potrošnji."
+                  : "The shop comes later — **the inquiry works now**, and we build the offer around space and demand."
+              }
+              points={[
+                {
+                  title: isHr ? "Firme i uredi" : "Companies and offices",
+                  body: isHr ? "Uredna, **redovita nabava**." : "Neat, **recurring procurement**.",
+                },
+                {
+                  title: isHr ? "Ustanove i zajednice" : "Institutions and communities",
+                  body: isHr ? "**Stalna dostupnost** i jasna komunikacija." : "**Steady availability** and clear communication.",
+                },
+                {
+                  title: isHr ? "Veće količine" : "Larger quantities",
+                  body: isHr ? "**Posebna ponuda** prema potrebi." : "A **dedicated offer** as needed.",
+                },
+              ]}
+            />
+          ),
           primaryCta: business.primaryCta ?? {
-            label: isHr ? "Posalji poslovni upit" : "Send business inquiry",
-            href: getWhatsAppHref(locale),
+            label: isHr ? "Pošalji poslovni upit" : "Send business inquiry",
+            href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
           secondaryCta: business.secondaryCta ?? {
             label: isHr ? "Svi proizvodi" : "All products",
             href: routes[locale].products,
             variant: "secondary",
           },
-          visual: (
-            <ImagePanel
-              alt={isHr ? "Poslovne kolicine i upit za ZOR papir" : "Business quantities and ZOR paper inquiry"}
-              src={business.imageUrl ?? "/visuals/deck/products-business.png"}
-            />
-          ),
+          image: {
+            src: business.imageUrl ?? "/visuals/deck/products-business.png",
+            alt: isHr ? "Poslovne količine i upit za ZOR papir" : "Business quantities and ZOR paper inquiry",
+          },
         },
       ]}
       theme={deckData?.chapter.theme ?? "products"}

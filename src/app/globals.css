@@ -73,6 +73,139 @@ a {
   animation: zor-slide-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.deck-slide-frame {
+  backface-visibility: hidden;
+  will-change: opacity, transform;
+}
+
+/*
+ * Zajednički "fit-to-viewport" primitivi za slajdove.
+ * Tipografija skalira s širinom (vw), a vertikalni razmaci s visinom (vh),
+ * pa se gusti slajdovi sami stežu na niskim ekranima bez ručnog podešavanja.
+ * Koristi ih DeckSlide; svaki novi/redizajnirani slajd dobiva isti sklad.
+ */
+.deck-eyebrow {
+  margin-bottom: clamp(0.55rem, 0.3rem + 1vh, 1rem);
+}
+
+.deck-title {
+  font-size: clamp(1.85rem, 1.05rem + 2.8vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.deck-title--dense {
+  font-size: clamp(1.7rem, 1rem + 2.3vw, 2.85rem);
+}
+
+.deck-body {
+  margin-top: clamp(0.8rem, 0.4rem + 1.4vh, 1.25rem);
+}
+
+.deck-slide-lead {
+  font-size: clamp(1rem, 0.96rem + 0.3vw, 1.125rem);
+  line-height: 1.55;
+}
+
+.deck-actions {
+  margin-top: clamp(1rem, 0.5rem + 1.8vh, 1.75rem);
+}
+
+/* Naglašene riječi (renderHighlights). */
+.deck-accent {
+  color: var(--deck-accent, #8ec9ff);
+  font-weight: 600;
+}
+
+/*
+ * Uređivački "chunkovi" — zamjena za glassy text-boxove.
+ * Bez ispune i staklenog efekta: samo tanka linija, naslov i muted tekst.
+ */
+.deck-points {
+  margin-top: clamp(0.85rem, 0.45rem + 1.5vh, 1.5rem);
+  display: grid;
+  gap: clamp(0.5rem, 0.28rem + 1vh, 1rem);
+}
+
+.deck-point {
+  padding-top: clamp(0.45rem, 0.28rem + 0.8vh, 0.8rem);
+  border-top: 1px solid var(--deck-line, rgba(255, 255, 255, 0.2));
+}
+
+.deck-point-title {
+  font-size: clamp(0.98rem, 0.92rem + 0.3vw, 1.15rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.deck-point-title--accent {
+  color: var(--deck-accent, #8ec9ff);
+}
+
+.deck-point-body {
+  margin-top: 0.2rem;
+  font-size: clamp(0.85rem, 0.82rem + 0.2vw, 0.98rem);
+  line-height: 1.45;
+  color: var(--deck-muted, #d7e8ff);
+}
+
+.deck-point--numbered {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(0.6rem, 0.4rem + 0.8vw, 1.1rem);
+  align-items: baseline;
+}
+
+.deck-point-index {
+  font-size: clamp(1.15rem, 0.8rem + 1.1vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--deck-accent, #8ec9ff);
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-slide-enter-horizontal-next,
+.deck-slide-enter-horizontal-previous,
+.deck-slide-enter-vertical-next,
+.deck-slide-enter-vertical-previous {
+  animation: var(--deck-enter-keyframes, deck-enter-from-right) 480ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.deck-slide-exit-horizontal-next,
+.deck-slide-exit-horizontal-previous,
+.deck-slide-exit-vertical-next,
+.deck-slide-exit-vertical-previous {
+  animation: var(--deck-exit-keyframes, deck-exit-to-left) 440ms
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.deck-slide-enter-horizontal-next {
+  --deck-enter-keyframes: deck-enter-from-right;
+}
+.deck-slide-enter-horizontal-previous {
+  --deck-enter-keyframes: deck-enter-from-left;
+}
+.deck-slide-enter-vertical-next {
+  --deck-enter-keyframes: deck-enter-from-bottom;
+}
+.deck-slide-enter-vertical-previous {
+  --deck-enter-keyframes: deck-enter-from-top;
+}
+
+.deck-slide-exit-horizontal-next {
+  --deck-exit-keyframes: deck-exit-to-left;
+}
+.deck-slide-exit-horizontal-previous {
+  --deck-exit-keyframes: deck-exit-to-right;
+}
+.deck-slide-exit-vertical-next {
+  --deck-exit-keyframes: deck-exit-to-top;
+}
+.deck-slide-exit-vertical-previous {
+  --deck-exit-keyframes: deck-exit-to-bottom;
+}
+
 .paper-texture {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(239, 247, 255, 0.82)),
@@ -107,6 +240,94 @@ a {
   }
 }
 
+@keyframes deck-enter-from-right {
+  from {
+    opacity: 0;
+    transform: translate3d(6%, 0, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes deck-enter-from-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-6%, 0, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes deck-enter-from-bottom {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6%, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes deck-enter-from-top {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6%, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes deck-exit-to-left {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-6%, 0, 0) scale(0.985);
+  }
+}
+
+@keyframes deck-exit-to-right {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(6%, 0, 0) scale(0.985);
+  }
+}
+
+@keyframes deck-exit-to-top {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6%, 0) scale(0.985);
+  }
+}
+
+@keyframes deck-exit-to-bottom {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 6%, 0) scale(0.985);
+  }
+}
+
 @media (max-width: 767px) {
   .slide-reveal {
     animation-duration: 460ms;
@@ -126,6 +347,24 @@ a {
   .slide-reveal {
     animation: none;
     opacity: 1;
+    transform: none;
+  }
+
+  .deck-slide-enter-horizontal-next,
+  .deck-slide-enter-horizontal-previous,
+  .deck-slide-enter-vertical-next,
+  .deck-slide-enter-vertical-previous {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .deck-slide-exit-horizontal-next,
+  .deck-slide-exit-horizontal-previous,
+  .deck-slide-exit-vertical-next,
+  .deck-slide-exit-vertical-previous {
+    animation: none;
+    opacity: 0;
     transform: none;
   }
 }

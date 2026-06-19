@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import {
   Archive,
   BriefcaseBusiness,
@@ -353,6 +353,111 @@ function ToggleField({
     <label className="flex min-h-10 items-center gap-3 rounded-xl border border-zor-line px-3 text-sm font-bold text-zor-blue-deep">
       <input className="h-4 w-4 accent-zor-blue" defaultChecked={defaultChecked} name={name} type="checkbox" />
       {label}
+    </label>
+  );
+}
+
+function ImageUploadField({
+  bucket,
+  defaultValue,
+  disabled,
+  label,
+  name,
+  supabase,
+}: {
+  bucket: string;
+  defaultValue?: string | null;
+  disabled?: boolean;
+  label: string;
+  name: string;
+  supabase: ReturnType<typeof getSupabaseBrowserClient>;
+}) {
+  const [value, setValue] = useState(defaultValue ?? "");
+  const [status, setStatus] = useState<"idle" | "uploading">("idle");
+  const [message, setMessage] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+
+  async function handleFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    if (!supabase) {
+      setMessage({ tone: "error", text: "Supabase nije konfiguriran — zalijepi URL ručno." });
+      return;
+    }
+
+    setStatus("uploading");
+    setMessage(null);
+
+    const extension = file.name.includes(".")
+      ? (file.name.split(".").pop() ?? "bin").toLowerCase()
+      : "bin";
+    const path = `${crypto.randomUUID()}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(bucket)
+      .upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type || undefined,
+        upsert: false,
+      });
+
+    setStatus("idle");
+
+    if (uploadError) {
+      setMessage({ tone: "error", text: uploadError.message });
+      return;
+    }
+
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    setValue(data.publicUrl);
+    setMessage({ tone: "ok", text: "Slika uploadana." });
+  }
+
+  return (
+    <label className="grid gap-1.5">
+      <span className="text-sm font-bold text-zor-blue-deep">{label}</span>
+      <input
+        className="h-10 rounded-xl border border-zor-line px-3 text-sm outline-none focus:border-zor-blue"
+        name={name}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder="https://… ili uploadaj datoteku"
+        type="text"
+        value={value}
+      />
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          accept="image/*"
+          className="text-xs text-zor-muted file:mr-2 file:rounded-full file:border-0 file:bg-zor-blue file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white"
+          disabled={disabled || status === "uploading"}
+          onChange={handleFile}
+          type="file"
+        />
+        {status === "uploading" ? (
+          <span className="text-xs font-semibold text-zor-blue">Uploadam…</span>
+        ) : null}
+      </div>
+      {message ? (
+        <span
+          className={cn(
+            "text-xs font-semibold",
+            message.tone === "error" ? "text-red-700" : "text-emerald-700",
+          )}
+        >
+          {message.text}
+        </span>
+      ) : null}
+      {value ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          alt="Pregled slike"
+          className="mt-1 h-20 w-auto rounded-lg border border-zor-line object-cover"
+          src={value}
+        />
+      ) : null}
     </label>
   );
 }
@@ -916,7 +1021,7 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
           ) : null}
           {role === "viewer" ? (
             <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900">
-              Viewer mode: mozes pregledavati podatke, ali spremanje i brisanje je onemoguceno.
+              Viewer mode: možeš pregledavati podatke, ali spremanje i brisanje je onemogućeno.
             </div>
           ) : null}
           <LoadingState loading={loading} />
@@ -1159,7 +1264,7 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
     const bodyLength = slideDraft.body?.length ?? 0;
 
     return (
-      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" onSubmit={saveSlide}>
+      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" key={slideDraft.id ?? "new"} onSubmit={saveSlide}>
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="grid gap-4">
             <div className="grid gap-4 md:grid-cols-3">
@@ -1186,15 +1291,15 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
               <Field defaultValue={slideDraft.secondary_cta_label} label="Secondary CTA label" name="secondary_cta_label" />
               <Field defaultValue={slideDraft.secondary_cta_href} label="Secondary CTA href" name="secondary_cta_href" />
               <Field defaultValue={slideDraft.visual_type} label="Visual type" name="visual_type" />
-              <Field defaultValue={slideDraft.image_url} label="Image URL" name="image_url" />
+              <ImageUploadField bucket="deck-images" defaultValue={slideDraft.image_url} disabled={!canEdit} label="Image" name="image_url" supabase={supabase} />
               <SelectField defaultValue={slideDraft.background_variant} label="Background" name="background_variant" options={backgrounds} />
               <SelectField defaultValue={slideDraft.layout_variant} label="Layout" name="layout_variant" options={layouts} />
               <SelectField defaultValue={slideDraft.content_alignment} label="Alignment" name="content_alignment" options={alignments} />
               <ToggleField defaultChecked={slideDraft.is_active ?? true} label="Active" name="is_active" />
             </div>
             <p className="rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-900">
-              Title preporuka: ispod 70 znakova. Body preporuka: ispod 220 znakova. Upload UI za bucket
-              `deck-images` je dokumentiran kao TODO; zasad zalijepi `image_url`.
+              Title preporuka: ispod 70 znakova. Body preporuka: ispod 220 znakova. Sliku možeš
+              uploadati (bucket `deck-images`) ili zalijepiti postojeći `image_url`.
             </p>
             {renderFormActions(() => setSlideDraft(null))}
           </div>
@@ -1249,7 +1354,7 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
     }
 
     return (
-      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" onSubmit={saveProduct}>
+      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" key={productDraft.id ?? "new"} onSubmit={saveProduct}>
         <div className="grid gap-4 md:grid-cols-3">
           <SelectField defaultValue={productDraft.status} label="Status" name="status" options={productStatuses} />
           <Field defaultValue={productDraft.slug} label="Slug" name="slug" required />
@@ -1270,9 +1375,8 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
           <TextArea defaultValue={productDraft.business_note_en} label="Business note EN" name="business_note_en" />
           <TextArea defaultValue={productDraft.recommended_for_hr} label="Recommended for HR" name="recommended_for_hr" />
           <TextArea defaultValue={productDraft.recommended_for_en} label="Recommended for EN" name="recommended_for_en" />
-          <Field defaultValue={productDraft.image_url} label="Image URL" name="image_url" />
+          <ImageUploadField bucket="product-images" defaultValue={productDraft.image_url} disabled={!canEdit} label="Product image" name="image_url" supabase={supabase} />
         </div>
-        <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">Upload UI za `product-images` bucket je TODO. Za sada zalijepi public image URL.</p>
         {renderFormActions(() => setProductDraft(null))}
       </form>
     );
@@ -1324,7 +1428,7 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
     }
 
     return (
-      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" onSubmit={savePost}>
+      <form className="mb-5 grid gap-4 rounded-2xl border border-zor-line bg-zor-paper p-4" key={postDraft.id ?? "new"} onSubmit={savePost}>
         <div className="grid gap-4 md:grid-cols-3">
           <SelectField defaultValue={postDraft.locale} label="Locale" name="locale" options={localeOptions} />
           <SelectField defaultValue={postDraft.status} label="Status" name="status" options={blogStatuses} />
@@ -1337,9 +1441,8 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
         <TextArea defaultValue={postDraft.content} label="Content" name="content" rows={9} />
         <div className="grid gap-4 md:grid-cols-2">
           <TextArea defaultValue={postDraft.seo_description} label="SEO description" name="seo_description" />
-          <Field defaultValue={postDraft.cover_image_url} label="Cover image URL" name="cover_image_url" />
+          <ImageUploadField bucket="blog-images" defaultValue={postDraft.cover_image_url} disabled={!canEdit} label="Cover image" name="cover_image_url" supabase={supabase} />
         </div>
-        <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">Upload UI za `blog-images` bucket je TODO. Za sada zalijepi public cover image URL.</p>
         {renderFormActions(() => setPostDraft(null))}
       </form>
     );
@@ -1505,7 +1608,7 @@ export function AdminPanel({ initialEmail, initialName, initialRole }: AdminPane
     return (
       <Panel>
         <SectionHeader
-          description="Admin moze mijenjati brand, WhatsApp, shop URL i druge JSON settings vrijednosti. Editor/viewer ovdje samo citaju."
+          description="Admin može mijenjati brand, WhatsApp, shop URL i druge JSON settings vrijednosti. Editor/viewer ovdje samo čitaju."
           title="Site Settings"
         />
         <div className="grid gap-3">

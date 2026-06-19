@@ -152,34 +152,30 @@ export const productsDeck = {
 
 export const productionDeck = {
   hr: [
-    { id: "hrvatska-proizvodnja", eyebrow: "Proizvodnja", title: "Hrvatska proizvodnja s praktičnom logistikom.", body: "Blizina pogona pomaže dostupnosti, kontroli i bržem dogovoru." },
-    { id: "jumbo-rola", eyebrow: "01", title: "Jumbo rola ulazi u kontrolirani proces.", body: "Sirovina je početna točka za stabilnu kvalitetu i planiranje zalihe." },
-    { id: "premotavanje", eyebrow: "02", title: "Premotavanje priprema papir za svakodnevnu upotrebu.", body: "Veliki format prelazi u praktičnu rolu za kupca." },
-    { id: "rezanje", eyebrow: "03", title: "Rezanje daje pakiranju točnu dimenziju.", body: "Uredan format olakšava pakiranje, skladištenje i isporuku." },
-    { id: "pakiranje", eyebrow: "04", title: "Pakiranje čuva čist i prepoznatljiv ZOR izgled.", body: "Paket mora biti jasan, uredan i spreman za redovitu potrošnju." },
-    { id: "skladiste", eyebrow: "05", title: "Dostupnost iz skladišta skraćuje put do kupca.", body: "Dogovor ima smisla tek kada je zaliha provjerena." },
+    { id: "hrvatska-proizvodnja", eyebrow: "Proizvodnja", title: "Hrvatska proizvodnja s praktičnom logistikom.", body: "Blizina pogona znači bolju **dostupnost**, izravnu **kontrolu kvalitete** i **brži dogovor** s kupcem." },
+    { id: "jumbo-rola", eyebrow: "Korak 01", title: "Jumbo rola ulazi u kontrolirani proces.", body: "Sirovina je **početna točka** — od nje ovise stabilna kvaliteta i mirno planiranje zalihe." },
+    { id: "premotavanje", eyebrow: "Korak 02", title: "Premotavanje priprema papir za svakodnevnu upotrebu.", body: "Veliki format prelazi u **praktičnu rolu** spremnu za stvarnu potrošnju u prostoru." },
+    { id: "rezanje", eyebrow: "Korak 03", title: "Rezanje daje pakiranju točnu dimenziju.", body: "**Uredan format** olakšava pakiranje, skladištenje i kasniju isporuku bez gubitka." },
+    { id: "pakiranje", eyebrow: "Korak 04", title: "Pakiranje čuva čist i prepoznatljiv ZOR izgled.", body: "Paket je **jasan i uredan**, spreman za redovitu potrošnju i brzo prepoznatljiv na polici." },
+    { id: "skladiste", eyebrow: "Korak 05", title: "Dostupnost iz skladišta skraćuje put do kupca.", body: "Dogovor ima smisla tek kada je **zaliha provjerena** i spremna za isporuku." },
   ],
   en: [
-    { id: "croatian-production", eyebrow: "Production", title: "Croatian production with practical logistics.", body: "A nearby plant helps availability, control, and faster coordination." },
-    { id: "jumbo-roll", eyebrow: "01", title: "The jumbo roll enters a controlled process.", body: "Raw material is the starting point for stable quality and stock planning." },
-    { id: "rewinding", eyebrow: "02", title: "Rewinding prepares paper for everyday use.", body: "The large format becomes a practical roll for the buyer." },
-    { id: "cutting", eyebrow: "03", title: "Cutting gives the pack its exact dimension.", body: "A neat format supports packing, storage, and delivery." },
-    { id: "packing", eyebrow: "04", title: "Packing keeps the ZOR look clean and recognizable.", body: "A pack should feel clear, tidy, and ready for recurring demand." },
-    { id: "warehouse", eyebrow: "05", title: "Warehouse availability shortens the route to the buyer.", body: "A promise matters only after stock has been checked." },
+    { id: "croatian-production", eyebrow: "Production", title: "Croatian production with practical logistics.", body: "A nearby plant means better **availability**, direct **quality control**, and **faster coordination** with the buyer." },
+    { id: "jumbo-roll", eyebrow: "Step 01", title: "The jumbo roll enters a controlled process.", body: "Raw material is the **starting point** — stable quality and calm stock planning depend on it." },
+    { id: "rewinding", eyebrow: "Step 02", title: "Rewinding prepares paper for everyday use.", body: "The large format becomes a **practical roll** ready for real use in the space." },
+    { id: "cutting", eyebrow: "Step 03", title: "Cutting gives the pack its exact dimension.", body: "A **neat format** supports packing, storage, and later delivery without waste." },
+    { id: "packing", eyebrow: "Step 04", title: "Packing keeps the ZOR look clean and recognizable.", body: "A pack stays **clear and tidy**, ready for recurring demand and easy to recognize." },
+    { id: "warehouse", eyebrow: "Step 05", title: "Warehouse availability shortens the route to the buyer.", body: "A promise matters only after **stock has been checked** and is ready to ship." },
   ],
 } satisfies Record<Locale, SlideText[]>;
 
 export const calculatorDeck = {
   hr: [
-    { id: "intro", eyebrow: "Kalkulator", title: "Procjena potrošnje prije narudžbe.", body: "Unesite broj korisnika i trajanje paketa. Cilj je jednostavna preporuka, ne komplicirana matematika." },
-    { id: "unos", eyebrow: "Input form", title: "Tri podatka su dovoljna za okvir.", body: "Broj korisnika, veličina paketa i koliko dana paket traje." },
-    { id: "rezultat", eyebrow: "Result", title: "Rezultat treba odmah voditi prema praktičnom paketu.", body: "Za veće potrebe preporuka ide prema mirnijoj zalihi i rjeđem naručivanju." },
+    { id: "unos", eyebrow: "Kalkulator", title: "Tri podatka i odmah vidite preporuku.", body: "**Korisnici**, **prostor** i **razdoblje** — jednostavna preporuka, ne komplicirana matematika." },
     { id: "whatsapp-upit", eyebrow: "WhatsApp", title: "Pošaljite rezultat i dobijte sljedeći korak.", body: "Kratka poruka može zamijeniti dugačak obrazac." },
   ],
   en: [
-    { id: "intro", eyebrow: "Calculator", title: "Estimate consumption before ordering.", body: "Enter users and pack duration. The goal is a simple recommendation, not complicated math." },
-    { id: "input", eyebrow: "Input form", title: "Three inputs are enough for a useful estimate.", body: "Users, pack size, and how many days the pack lasts." },
-    { id: "result", eyebrow: "Result", title: "The result should lead to a practical pack immediately.", body: "For higher demand, the recommendation moves toward calmer stock and fewer reorders." },
+    { id: "input", eyebrow: "Calculator", title: "Three inputs and you see the recommendation instantly.", body: "**Users**, **space** and **period** — a simple recommendation, not complicated math." },
     { id: "whatsapp-inquiry", eyebrow: "WhatsApp", title: "Send the result and get the next step.", body: "A short message can replace a long form." },
   ],
 } satisfies Record<Locale, SlideText[]>;

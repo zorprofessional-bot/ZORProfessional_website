@@ -38,16 +38,16 @@ export const products: Product[] = [
       en: "EUR 12.90",
     },
     summary: {
-      hr: "Praktican paket toaletnog papira za domove, manje urede, apartmane i redovitu zalihu.",
+      hr: "Praktičan paket toaletnog papira za domove, manje urede, apartmane i redovitu zalihu.",
       en: "A practical toilet paper pack for homes, smaller offices, apartments, and regular stock.",
     },
     detail: {
-      hr: "ZORPro 24 je jednostavan izbor kada su vazni dostupnost, fer cijena i narudzba bez dugog kataloga.",
+      hr: "ZORPro 24 je jednostavan izbor kada su važni dostupnost, fer cijena i narudžba bez dugog kataloga.",
       en: "ZORPro 24 is a simple choice when availability, a fair price, and ordering without a long catalogue matter.",
     },
     image: "/visuals/deck/product-zorpro-24.png",
     highlights: {
-      hr: ["24 role za redovitu potrosnju", "Dobar omjer cijene i dostupnosti", "Jednostavan WhatsApp upit"],
+      hr: ["24 role za redovitu potrošnju", "Dobar omjer cijene i dostupnosti", "Jednostavan WhatsApp upit"],
       en: ["24 rolls for regular use", "Good balance of price and availability", "Simple WhatsApp inquiry"],
     },
     specs: [
@@ -92,16 +92,16 @@ export const products: Product[] = [
       en: "EUR 18.90",
     },
     summary: {
-      hr: "Veci paket za obitelji, apartmane, male firme i zajednice koje zele rjede narucivati.",
+      hr: "Veći paket za obitelji, apartmane, male firme i zajednice koje žele rjeđe naručivati.",
       en: "A larger pack for families, apartments, small companies, and communities that want fewer reorders.",
     },
     detail: {
-      hr: "ZORPro 36 pomaze drzati mirniju zalihu za prostore s vecom mjesecnom potrosnjom.",
+      hr: "ZORPro 36 pomaže držati mirniju zalihu za prostore s većom mjesečnom potrošnjom.",
       en: "ZORPro 36 helps keep calmer stock for spaces with higher monthly demand.",
     },
     image: "/visuals/deck/product-zorpro-36.png",
     highlights: {
-      hr: ["36 rola za vecu zalihu", "Prakticno za redovite kolicine", "Manje prekida u nabavi"],
+      hr: ["36 rola za veću zalihu", "Praktično za redovite količine", "Manje prekida u nabavi"],
       en: ["36 rolls for higher stock", "Practical for recurring quantities", "Fewer procurement interruptions"],
     },
     specs: [

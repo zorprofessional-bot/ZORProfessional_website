@@ -985,8 +985,14 @@ Trenutno kod ima helper:
 - `getSiteSettings()`
 - `getWhatsAppNumber()`
 - `getShopUrl()`
+- `getSiteContact()` — request-cached, vraca razrijesen kontakt (whatsapp broj, email, telefon, lokacija, brand, company, shop URL)
 
-Nisu jos sva UI mjesta prebacena da koriste settings dinamicno; dio i dalje koristi `src/content/site.ts` fallback. To je namjerno dok nema admin UI-a.
+Public UI cita kontakt iz `site_settings` preko `getSiteContact()`:
+
+- server stranice (Home, Proizvodi, Proizvodnja, Kalkulator, Karijere, Kontakt, detalj proizvoda) grade WhatsApp/email linkove iz razrijesenog kontakta.
+- client komponente (`Navbar`, kalkulator/kontakt/karijere kartice) citaju isti objekt kroz `SiteSettingsProvider` + `useSiteContact()`.
+
+Ako Supabase nije konfiguriran ili kljuc fali, `getSiteContact()` pada na `src/content/site.ts` (`fallbackSiteContact`), pa je ponasanje identicno kao prije. Promjena WhatsApp broja / emaila u `site_settings` mijenja ih na cijelom javnom webu (uz rebuild/revalidate ako je stranica staticki prerenderana).
 
 ## 20. Storage Buckets
 

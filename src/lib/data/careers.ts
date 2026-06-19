@@ -51,9 +51,9 @@ function fallbackPositions(locale: Locale): CareerPosition[] {
       id: "open-application",
       title: isHr ? "Otvorena prijava" : "Open application",
       location: "Robni terminali Jankomir",
-      employmentType: isHr ? "Proizvodnja i skladiste" : "Production and warehouse",
+      employmentType: isHr ? "Proizvodnja i skladište" : "Production and warehouse",
       description: isHr
-        ? "Kratko se javite ako zelite raditi u proizvodnji ili pakiranju."
+        ? "Kratko se javite ako želite raditi u proizvodnji ili pakiranju."
         : "Send a short note if you want to work in production or packing.",
       requirements: isHr
         ? "Osnovni podaci i vrsta posla koja vas zanima."

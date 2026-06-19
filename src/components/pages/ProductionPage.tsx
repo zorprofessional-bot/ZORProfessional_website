@@ -1,11 +1,11 @@
 import { DeckPage } from "@/components/deck/DeckPage";
-import { ImagePanel } from "@/components/deck/DeckVisuals";
 import { chapterLabels, productionDeck } from "@/content/deck";
-import { getWhatsAppHref, type Locale } from "@/content/site";
+import { buildWhatsAppHref, type Locale } from "@/content/site";
 import {
   resolveDeckSlideContent,
   type DeckPageData,
 } from "@/lib/data/deck";
+import { getSiteContact } from "@/lib/data/settings";
 
 type ProductionPageProps = {
   deckData?: DeckPageData;
@@ -21,12 +21,13 @@ const productionSlideImages = [
   "/visuals/deck/production-warehouse.png",
 ];
 
-export function ProductionPage({ deckData, locale }: ProductionPageProps) {
+export async function ProductionPage({ deckData, locale }: ProductionPageProps) {
   const fallbackSlides = productionDeck[locale];
   const slides = fallbackSlides.map((slide) =>
     resolveDeckSlideContent(deckData, slide),
   );
   const isHr = locale === "hr";
+  const contact = await getSiteContact();
 
   return (
     <DeckPage
@@ -43,17 +44,15 @@ export function ProductionPage({ deckData, locale }: ProductionPageProps) {
           slide.primaryCta ??
           (index === 0 || index === slides.length - 1
             ? {
-                label: isHr ? "PoÅ¡alji upit" : "Send inquiry",
-                href: getWhatsAppHref(locale),
+                label: isHr ? "Pošalji upit" : "Send inquiry",
+                href: buildWhatsAppHref(contact.whatsappNumber, locale),
               }
             : undefined),
-        visual: (
-            <ImagePanel
-              alt={slide.title}
-              priority={index === 0}
-              src={slide.imageUrl ?? productionSlideImages[index] ?? productionSlideImages[0]}
-            />
-          ),
+        image: {
+          src: slide.imageUrl ?? productionSlideImages[index] ?? productionSlideImages[0],
+          alt: slide.title,
+          priority: index === 0,
+        },
       }))}
       theme={deckData?.chapter.theme ?? "production"}
     />

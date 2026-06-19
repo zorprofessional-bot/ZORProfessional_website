@@ -20,6 +20,11 @@ pnpm-debug.log*
 playwright-report/
 test-results/
 .zor-*.log
+debug.log
+
+# local-only working artifacts (not part of the product)
+.audit/
+.planning/
 
 # local env
 .env*
