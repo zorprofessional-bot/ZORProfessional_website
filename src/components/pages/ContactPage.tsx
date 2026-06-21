@@ -58,7 +58,7 @@ export async function ContactPage({ deckData, locale }: ContactPageProps) {
             variant: "secondary",
           },
           image: {
-            src: slides[0]?.imageUrl ?? "/visuals/deck/contact-whatsapp.png",
+            src: slides[0]?.imageUrl ?? "/visuals/deck/contact-whatsapp.webp",
             alt: isHr ? "Kratka poruka za upit" : "Short inquiry message",
             priority: true,
           },
@@ -80,7 +80,7 @@ export async function ContactPage({ deckData, locale }: ContactPageProps) {
           visual: (
             <ImagePanel
               alt={isHr ? "Email upit s više konteksta" : "Email inquiry with more context"}
-              src={slides[1]?.imageUrl ?? "/visuals/deck/contact-form.png"}
+              src={slides[1]?.imageUrl ?? "/visuals/deck/contact-form.webp"}
             />
           ),
         },
@@ -106,7 +106,7 @@ export async function ContactPage({ deckData, locale }: ContactPageProps) {
             />
           ),
           image: {
-            src: slides[2]?.imageUrl ?? "/visuals/deck/contact-location.png",
+            src: slides[2]?.imageUrl ?? "/visuals/deck/contact-location.webp",
             alt: isHr ? "Lokacija i dostupnost iz skladišta" : "Location and warehouse availability",
           },
         },

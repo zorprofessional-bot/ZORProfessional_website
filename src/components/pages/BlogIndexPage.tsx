@@ -49,7 +49,7 @@ export function BlogIndexPage({
           },
           hideVisualOnMobile: true,
           image: {
-            src: featured.imageUrl ?? "/visuals/deck/blog-featured.png",
+            src: featured.imageUrl ?? "/visuals/deck/blog-featured.webp",
             alt: isHr ? "Kratki vodiči prije upita" : "Short guides before inquiry",
             priority: true,
           },
@@ -77,7 +77,7 @@ export function BlogIndexPage({
           ),
           layout: "splitReverse",
           image: {
-            src: guides.imageUrl ?? "/visuals/deck/blog-guides.png",
+            src: guides.imageUrl ?? "/visuals/deck/blog-guides.webp",
             alt: isHr ? "Jednostavno planiranje potrošnje" : "Simple consumption planning",
           },
         },

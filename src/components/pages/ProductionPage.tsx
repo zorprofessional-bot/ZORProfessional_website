@@ -13,12 +13,12 @@ type ProductionPageProps = {
 };
 
 const productionSlideImages = [
-  "/visuals/deck/production-intro.png",
-  "/visuals/deck/production-jumbo-roll.png",
-  "/visuals/deck/production-rewinding.png",
-  "/visuals/deck/production-cutting.png",
-  "/visuals/deck/production-packing.png",
-  "/visuals/deck/production-warehouse.png",
+  "/visuals/deck/production-intro.webp",
+  "/visuals/deck/production-jumbo-roll.webp",
+  "/visuals/deck/production-rewinding.webp",
+  "/visuals/deck/production-cutting.webp",
+  "/visuals/deck/production-packing.webp",
+  "/visuals/deck/production-warehouse.webp",
 ];
 
 export async function ProductionPage({ deckData, locale }: ProductionPageProps) {

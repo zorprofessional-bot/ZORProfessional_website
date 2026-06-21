@@ -44,7 +44,7 @@ export async function HomePage({ deckData, locale }: HomePageProps) {
             variant: "secondary",
           },
           image: {
-            src: hero.imageUrl ?? "/visuals/deck/home-hero.png",
+            src: hero.imageUrl ?? "/visuals/deck/home-hero.webp",
             alt: isHr ? "ZOR Professional toaletni papir" : "ZOR Professional toilet paper",
             priority: true,
           },
@@ -63,7 +63,7 @@ export async function HomePage({ deckData, locale }: HomePageProps) {
           ),
           layout: audience.layout ?? "splitReverse",
           image: {
-            src: audience.imageUrl ?? "/visuals/deck/home-audience.png",
+            src: audience.imageUrl ?? "/visuals/deck/home-audience.webp",
             alt: isHr
               ? "Prostori koji svakodnevno koriste toaletni papir"
               : "Spaces that use toilet paper every day",
@@ -83,7 +83,7 @@ export async function HomePage({ deckData, locale }: HomePageProps) {
           ),
           layout: why.layout ?? "split",
           image: {
-            src: why.imageUrl ?? "/visuals/deck/home-why-zor.png",
+            src: why.imageUrl ?? "/visuals/deck/home-why-zor.webp",
             alt: isHr ? "Proizvodnja i dostupnost ZOR papira" : "ZOR paper production and availability",
           },
         },
@@ -110,7 +110,7 @@ export async function HomePage({ deckData, locale }: HomePageProps) {
             variant: "secondary",
           },
           image: {
-            src: quickPath.imageUrl ?? "/visuals/deck/home-quick-path.png",
+            src: quickPath.imageUrl ?? "/visuals/deck/home-quick-path.webp",
             alt: isHr ? "Brzi odabir sljedećeg koraka" : "Fast next-step choice",
           },
         },

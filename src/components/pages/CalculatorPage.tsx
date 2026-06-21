@@ -45,7 +45,7 @@ export async function CalculatorPage({ deckData, locale }: CalculatorPageProps) 
             <ImagePanel
               alt={isHr ? "Procjena potrošnje po korisniku" : "Per-user consumption estimate"}
               priority
-              src={input.imageUrl ?? "/visuals/deck/calculator-input.png"}
+              src={input.imageUrl ?? "/visuals/deck/calculator-input.webp"}
             />
           ),
         },
@@ -65,7 +65,7 @@ export async function CalculatorPage({ deckData, locale }: CalculatorPageProps) 
             href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
           image: {
-            src: whatsapp.imageUrl ?? "/visuals/deck/calculator-whatsapp.png",
+            src: whatsapp.imageUrl ?? "/visuals/deck/calculator-whatsapp.webp",
             alt: isHr ? "Slanje rezultata kroz kratku poruku" : "Sending the result with a short message",
           },
         },

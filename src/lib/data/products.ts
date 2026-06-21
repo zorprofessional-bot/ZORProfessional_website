@@ -76,7 +76,7 @@ function mapProduct(row: ProductRow, locale: Locale): ProductWithHref {
     mockPrice: price,
     summary,
     detail,
-    image: row.image_url ?? "/visuals/deck/product-range.png",
+    image: row.image_url ?? "/visuals/deck/product-range.webp",
     highlights: {
       hr: [
         row.recommended_for_hr ?? "Domovi, firme i apartmani",

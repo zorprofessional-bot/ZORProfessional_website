@@ -61,7 +61,7 @@ export async function CareersPage({ deckData, locale, positions = [] }: CareersP
             href: buildWhatsAppHref(contact.whatsappNumber, locale),
           },
           image: {
-            src: intro.imageUrl ?? "/visuals/deck/careers-intro.png",
+            src: intro.imageUrl ?? "/visuals/deck/careers-intro.webp",
             alt: isHr ? "Radno okruženje u proizvodnji" : "Production work environment",
             priority: true,
           },
@@ -101,7 +101,7 @@ export async function CareersPage({ deckData, locale, positions = [] }: CareersP
           ),
           layout: "splitReverse",
           image: {
-            src: roles.imageUrl ?? "/visuals/deck/careers-operator.png",
+            src: roles.imageUrl ?? "/visuals/deck/careers-operator.webp",
             alt: isHr ? "Rad na proizvodnoj liniji" : "Production line work",
           },
         },
@@ -118,7 +118,7 @@ export async function CareersPage({ deckData, locale, positions = [] }: CareersP
             />
           ),
           image: {
-            src: openings.imageUrl ?? "/visuals/deck/careers-positions.png",
+            src: openings.imageUrl ?? "/visuals/deck/careers-positions.webp",
             alt: isHr ? "Otvorene pozicije povezane s pogonom" : "Open roles tied to the plant",
           },
         },
@@ -143,7 +143,7 @@ export async function CareersPage({ deckData, locale, positions = [] }: CareersP
           visual: (
             <ImagePanel
               alt={isHr ? "Kratka prijava za rad u proizvodnji" : "Short application for production work"}
-              src={application.imageUrl ?? "/visuals/deck/careers-application.png"}
+              src={application.imageUrl ?? "/visuals/deck/careers-application.webp"}
             />
           ),
         },

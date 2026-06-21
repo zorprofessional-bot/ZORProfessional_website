@@ -70,7 +70,7 @@ export async function ProductsIndexPage({
             variant: "secondary",
           },
           image: {
-            src: overview.imageUrl ?? "/visuals/deck/product-range.png",
+            src: overview.imageUrl ?? "/visuals/deck/product-range.webp",
             alt: isHr ? "ZOR Professional proizvodi" : "ZOR Professional products",
             priority: true,
           },
@@ -141,7 +141,7 @@ export async function ProductsIndexPage({
             variant: "secondary",
           },
           image: {
-            src: business.imageUrl ?? "/visuals/deck/products-business.png",
+            src: business.imageUrl ?? "/visuals/deck/products-business.webp",
             alt: isHr ? "Poslovne količine i upit za ZOR papir" : "Business quantities and ZOR paper inquiry",
           },
         },

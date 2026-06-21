@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { Container } from "./Container";
 import { ButtonLink } from "./ButtonLink";
-import { LogoMark } from "./LogoMark";
 import {
   buildWhatsAppHref,
   desktopNav,
@@ -53,17 +53,22 @@ export function Navbar({
     >
       <Container>
         <nav className="flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
-          <Link aria-label="ZOR" className="flex items-center" href={routes[locale].home}>
-            <LogoMark
-              alt=""
-              className={cn(
-                "h-12 w-12 rounded-2xl shadow-sm ring-1 ring-inset md:h-14 md:w-14",
-                dark ? "ring-white/70" : "ring-zor-line",
-              )}
-              imageClassName="p-1"
-              priority
-              sizes="(min-width: 768px) 3.5rem, 3rem"
-            />
+          <Link
+            aria-label="ZOR"
+            className="flex self-start"
+            href={routes[locale].home}
+          >
+            <span className="flex items-center rounded-b-2xl border-x border-b border-[#d4deec] bg-gradient-to-b from-white to-[#e6edf7] px-5 pb-4 pt-5 shadow-[0_20px_36px_-10px_rgba(6,36,75,0.6),0_4px_10px_rgba(6,36,75,0.24),inset_0_2px_0_rgba(255,255,255,0.95),inset_0_-4px_8px_rgba(6,36,75,0.08)] md:px-6 md:pb-5 md:pt-6">
+              <Image
+                alt="ZOR"
+                className="h-6 w-auto md:h-8"
+                height={154}
+                priority
+                sizes="(min-width: 768px) 116px, 88px"
+                src="/brand/zor-wordmark.webp"
+                width={552}
+              />
+            </span>
           </Link>
 
           <div className="hidden items-center gap-1 lg:flex">

@@ -407,7 +407,7 @@ export function ProcessStepVisual({
           className="object-cover"
           fill
           sizes="(min-width: 1024px) 42vw, 100vw"
-          src="/visuals/production-line.png"
+          src="/visuals/production-line.webp"
           style={{ objectPosition: processImagePositions[stepIndex] ?? "center" }}
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(245,250,255,0.06)_0%,rgba(6,36,75,0.1)_46%,rgba(6,36,75,0.72)_100%)]" />

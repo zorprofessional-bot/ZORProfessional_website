@@ -372,6 +372,10 @@ export function DeckShell({
             const transitioningOut = transition?.fromIndex === index;
             const transitioning = transitioningIn || transitioningOut;
             const visible = active || transitioningOut;
+            // Učitavaj samo aktivni slide i njegove neposredne susjede. Udaljeni
+            // slideovi dobivaju `display:none`, pa native lazy-loading ne dohvaća
+            // njihove slike dok se ne približe. DOM (i stanje formi) ostaje montiran.
+            const near = active || transitioning || Math.abs(index - activeIndex) <= 1;
             const transitionClass = transitioning
               ? transitioningIn
                 ? `deck-slide-enter-${transition.axis}-${transition.direction}`
@@ -383,9 +387,11 @@ export function DeckShell({
                 aria-hidden={!active}
                 className={cn(
                   "deck-slide-frame deck-scroll absolute inset-0 h-full w-full overflow-y-auto overscroll-contain transition-opacity duration-200 ease-out md:overflow-hidden",
-                  visible
-                    ? "visible opacity-100"
-                    : "invisible pointer-events-none opacity-0",
+                  !near && "hidden",
+                  near &&
+                    (visible
+                      ? "visible opacity-100"
+                      : "invisible pointer-events-none opacity-0"),
                   active ? "pointer-events-auto" : "pointer-events-none",
                   transitioningIn && "z-20",
                   transitioningOut && "z-10",

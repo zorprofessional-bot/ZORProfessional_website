@@ -51,7 +51,7 @@ export function BlogDetailPage({
             variant: "secondary",
           },
           image: {
-            src: "/visuals/deck/blog-featured.png",
+            src: "/visuals/deck/blog-featured.webp",
             alt: isHr ? "Praktični vodič prije upita" : "Practical guide before inquiry",
             priority: true,
           },
@@ -82,7 +82,7 @@ export function BlogDetailPage({
           visual: (
             <ImagePanel
               alt={isHr ? "Jednostavno čitanje praktičnog vodiča" : "Simple practical guide reading"}
-              src="/visuals/deck/blog-guides.png"
+              src="/visuals/deck/blog-guides.webp"
             />
           ),
         },
@@ -104,7 +104,7 @@ export function BlogDetailPage({
           visual: (
             <ImagePanel
               alt={isHr ? "Povezani vodiči za opskrbu" : "Related supply guides"}
-              src="/visuals/deck/blog-advice.png"
+              src="/visuals/deck/blog-advice.webp"
             />
           ),
         },

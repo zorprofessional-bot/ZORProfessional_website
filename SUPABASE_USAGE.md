@@ -487,7 +487,7 @@ Primjeri gdje je korisno:
 Slike mogu biti lokalne:
 
 ```txt
-/visuals/hero-paper.png
+/visuals/deck/home-hero.webp
 ```
 
 Ili iz Supabase storagea:
