@@ -89,9 +89,17 @@ export function DeckShell({
   const [activeIndex, setActiveIndex] = useState(0);
   const [transition, setTransition] = useState<DeckTransition | null>(null);
   const activeIndexRef = useRef(activeIndex);
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const touchStart = useRef<{
+    x: number;
+    y: number;
+    canScroll: boolean;
+    atTop: boolean;
+    atBottom: boolean;
+  } | null>(null);
   const transitionToken = useRef(0);
   const wheelLockUntil = useRef(0);
+  const frameRefs = useRef(new Map<number, HTMLDivElement>());
+  const [showScrollHint, setShowScrollHint] = useState(false);
   const slideNodes = useMemo(() => Children.toArray(children), [children]);
   const nextChapterHref = menuFlow
     ? getAdjacentMenuChapterHref(locale, activeKey, "next")
@@ -102,6 +110,31 @@ export function DeckShell({
   useEffect(() => {
     activeIndexRef.current = activeIndex;
   }, [activeIndex]);
+
+  // "Scroll za više" afordansa: prikaži suptilan chevron samo na mobitelu, kad
+  // aktivni slide prelazi viewport i još nije skrolan do dna.
+  const measureScrollHint = useCallback(() => {
+    const el = frameRefs.current.get(activeIndexRef.current);
+
+    if (!el || !window.matchMedia("(max-width: 767px)").matches) {
+      setShowScrollHint(false);
+      return;
+    }
+
+    const canScroll = el.scrollHeight > el.clientHeight + 1;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
+    setShowScrollHint(canScroll && !atBottom);
+  }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(measureScrollHint);
+    window.addEventListener("resize", measureScrollHint);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measureScrollHint);
+    };
+  }, [activeIndex, measureScrollHint]);
 
   useEffect(() => {
     if (!transition) {
@@ -296,7 +329,18 @@ export function DeckShell({
 
   const handleTouchStart = (event: React.TouchEvent<HTMLElement>) => {
     const touch = event.touches[0];
-    touchStart.current = { x: touch.clientX, y: touch.clientY };
+    const scrollEl = (event.target as HTMLElement).closest(".deck-slide-frame");
+    let canScroll = false;
+    let atTop = true;
+    let atBottom = true;
+
+    if (scrollEl) {
+      canScroll = scrollEl.scrollHeight > scrollEl.clientHeight + 1;
+      atTop = scrollEl.scrollTop <= 1;
+      atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 1;
+    }
+
+    touchStart.current = { x: touch.clientX, y: touch.clientY, canScroll, atTop, atBottom };
   };
 
   const handleTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
@@ -309,6 +353,7 @@ export function DeckShell({
     const deltaY = touch.clientY - touchStart.current.y;
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
+    const { canScroll, atTop, atBottom } = touchStart.current;
     touchStart.current = null;
 
     if (Math.max(absX, absY) < 48) {
@@ -319,6 +364,20 @@ export function DeckShell({
       if (deltaX < 0) {
         goNext();
       } else {
+        goPrevious();
+      }
+      return;
+    }
+
+    // Na mobitelu vertikalni gest najprije skrola sadržaj slidea; promjena
+    // slidea se dogodi tek kad je sadržaj već na rubu (vrhu/dnu) na početku
+    // gesta. Kad sadržaj stane u viewport (`canScroll` false), navigira odmah.
+    if (canScroll && window.matchMedia("(max-width: 767px)").matches) {
+      if (deltaY < 0) {
+        if (atBottom) {
+          goNext();
+        }
+      } else if (atTop) {
         goPrevious();
       }
       return;
@@ -398,11 +457,39 @@ export function DeckShell({
                   transitionClass,
                 )}
                 key={slides[index]?.id ?? index}
+                onScroll={active ? measureScrollHint : undefined}
+                ref={(node) => {
+                  if (node) {
+                    frameRefs.current.set(index, node);
+                  } else {
+                    frameRefs.current.delete(index);
+                  }
+                }}
               >
                 {child}
               </div>
             );
           })}
+        </div>
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-x-0 bottom-2 z-30 flex justify-center transition-opacity duration-300 md:hidden",
+            showScrollHint ? "opacity-70" : "opacity-0",
+          )}
+        >
+          <span className="flex h-8 w-8 animate-bounce items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm">
+            <svg
+              aria-hidden
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
         </div>
       </main>
       <SlideIndicator
